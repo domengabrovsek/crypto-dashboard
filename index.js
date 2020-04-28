@@ -1,6 +1,8 @@
 'use strict';
 
 const express = require('express');
+const cors = require('cors');
+
 const krakenRouter = require('./src/routers/kraken');
 const commonRouter = require('./src/routers/common');
 
@@ -24,9 +26,10 @@ app.use((error, req, res, next) => {
   console.error("Status Code: ", error.statusCode);
   console.error("Error Message:", error.error.message);
 
-  res.set("Access-Control-Allow-Origin", '*');
   res.status(500).send();
 });
+
+app.use(cors);
 
 // set server to work with json
 app.use(express.json());
