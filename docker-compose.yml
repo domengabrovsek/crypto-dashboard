@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+
+  server:
+    image: domengabrovsek/playground-client
+    ports:
+      - "3030:3030"
+  client:
+    image: domengabrovsek/playground-server
+    ports: 
+      - "8080:8080"
