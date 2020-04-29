@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const cors = require('cors');
 
 const express = require('express');
 const router = new express.Router();
@@ -11,7 +12,7 @@ const { readFromFile, saveToFile, exists } = require('../fs/fileHelpers');
 const { accounts } = readFromFile(path.join(__dirname, '../../config.json'));
 
 // get all payments
-router.get('/public/stellar/payments', async (req, res) => {
+router.get('/public/stellar/payments', cors(), async (req, res, next) => {
 
   const filePath = path.join(__dirname, '../../db/operations.json');
 
@@ -29,7 +30,7 @@ router.get('/public/stellar/payments', async (req, res) => {
 });
 
 // get all operations
-router.get('/public/stellar/operations', async (req, res) => {
+router.get('/public/stellar/operations', cors(), async (req, res, next) => {
   const transactionsPath = path.join(__dirname, '../../db/transactions.json');
   const filePath = path.join(__dirname, '../../db/operations.json');
 
@@ -85,7 +86,7 @@ router.get('/public/stellar/operations', async (req, res) => {
 })
 
 // get all transactions
-router.get('/public/stellar/transactions', async (req, res) => {
+router.get('/public/stellar/transactions', cors(), async (req, res, next) => {
 
   const filePath = path.join(__dirname, '../../db/transactions.json');
 
