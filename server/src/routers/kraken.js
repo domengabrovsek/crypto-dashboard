@@ -6,7 +6,7 @@ const rp = require('request-promise');
 
 const baseUri = 'https://api.kraken.com/0/public'
 
-router.get('/public/data', async (req, res) => {
+router.get('/public/kraken/data', async (req, res) => {
 
   const uriMapping = {
     assets: `${baseUri}/Assets`,
