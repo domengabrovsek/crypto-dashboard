@@ -1,10 +1,13 @@
 # dockerfile for playground-client
 
 # https://hub.docker.com/_/node
-FROM node
+FROM node:12.16.3
 
-# clone source && install dependencies
-RUN git clone https://github.com/domengabrovsek/playground.git app && npm install --prefix "app/client"
+# clone source code
+RUN git clone https://github.com/domengabrovsek/playground.git app
+
+# install dependencies
+RUN npm install --prefix "app/client"
 
 # run app
 CMD npm run serve --prefix "app/client"
