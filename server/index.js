@@ -3,8 +3,9 @@
 const express = require('express');
 const cors = require('cors');
 
-const krakenRouter = require('./src/routers/kraken');
 const commonRouter = require('./src/routers/common');
+const krakenRouter = require('./src/routers/kraken');
+const stellarRouter = require('./src/routers/stellar');
 
 const app = express();
 const port = 3030;
@@ -29,14 +30,15 @@ app.use((error, req, res, next) => {
   res.status(500).send();
 });
 
-app.use(cors);
-
 // set server to work with json
 app.use(express.json());
 
 // register routers
-app.use(krakenRouter);
 app.use(commonRouter);
+app.use(krakenRouter);
+app.use(stellarRouter);
+
+app.use(cors);
 
 // start server
 app.listen(port, () => console.log(`Server started on port ${port}`));

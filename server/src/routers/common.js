@@ -9,7 +9,4 @@ router.get('/status', async (req, res) => {
   res.send('Server is working!');
 });
 
-
-
-
 module.exports = router;
