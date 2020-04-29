@@ -38,7 +38,7 @@ app.use(commonRouter);
 app.use(krakenRouter);
 app.use(stellarRouter);
 
-app.use(cors);
+
 
 // start server
 app.listen(port, () => console.log(`Server started on port ${port}`));

@@ -1,32 +1,79 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+
+      <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+          <a class="navbar-brand" href="#">Dashboard</a>
+          <button class="btn-default" @click="getTransactions()">Get Transactions</button>
+          <button class="btn-default" @click="getOperations()">Get Operations</button>
+          <button class="btn-default" @click="getPayments()">Get Payments</button>
+        </nav>
+      </header>
+
+      <div class ="container-fluid justify-content-center " >
+        <table v-if="response" class="table table-striped table-dark">
+          <thead>
+            <tr>
+              <th scope="col" v-for="column in response.columns" :key="column">{{ column }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in response.data" :key="row.id">
+              <td v-for="column in response.columns" :key="column">{{ row[column] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <router-view/>
-  </div>
+
 </template>
 
+<script>
+import axios from 'axios';
+
+const host = 'http://localhost:3030';
+
+export default {
+  data() {
+    return {
+      response: {
+        columns: null,
+        data: null,
+      },
+    };
+  },
+  methods: {
+    getTransactions() {
+      axios.get(`${host}/public/stellar/transactions`).then((response) => {
+        this.response = {
+          columns: Object.keys(response.data[0]),
+          data: response.data,
+        };
+      });
+    },
+    getPayments() {
+      axios.get(`${host}/public/stellar/payments`).then((response) => {
+        this.response = {
+          columns: Object.keys(response.data[0]),
+          data: response.data,
+        };
+      });
+    },
+    getOperations() {
+      axios.get(`${host}/public/stellar/operations`).then((response) => {
+        this.response = {
+          columns: Object.keys(response.data[0]),
+          data: response.data,
+        };
+      });
+    },
+  },
+};
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
 
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+table {
+  margin-top: 56px
 }
 </style>
