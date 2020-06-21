@@ -1,2 +1,2 @@
-# playground
-Playground
+# Stellar (XLM) account viewer
+
