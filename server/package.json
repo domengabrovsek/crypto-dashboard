@@ -1,20 +1,25 @@
 {
-  "name": "playground",
+  "name": "account-viewer",
   "version": "1.0.0",
-  "description": "Playground",
-  "main": "index.js",
-  "scripts": {},
+  "description": "Crypto account viewer",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "nodemon",
+    "inspect": "nodemon --inspect src/app.js",
+    "lint": "eslint ./ --ext .js,.json --ignore-path .eslintignore",
+    "lint-fix": "eslint ./ --ext .js,.json --ignore-path .eslintignore --fix"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/domengabrovsek/playground.git"
+    "url": "git+https://github.com/domengabrovsek/stellar-account-viewer.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Domen Gabrovsek",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/domengabrovsek/playground/issues"
+    "url": "https://github.com/domengabrovsek/stellar-account-viewer/issues"
   },
-  "homepage": "https://github.com/domengabrovsek/playground#readme",
+  "homepage": "https://github.com/domengabrovsek/stellar-account-viewer#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
@@ -22,5 +27,9 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "stellar-sdk": "^5.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "eslint-plugin-json": "^2.1.1"
   }
 }

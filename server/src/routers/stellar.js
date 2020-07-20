@@ -6,7 +6,7 @@ const cors = require('cors');
 const express = require('express');
 const router = new express.Router();
 const StellarSdk = require('stellar-sdk');
-const server = new StellarSdk.Server('https://horizon.stellar.org')
+const server = new StellarSdk.Server('https://horizon.stellar.org');
 
 const { readFromFile, saveToFile, exists } = require('../fs/fileHelpers');
 const { accounts } = readFromFile(path.join(__dirname, '../../config.json'));
@@ -46,9 +46,9 @@ router.get('/public/stellar/operations', cors(), async (req, res, next) => {
   else {
     const transactionsIds = readFromFile(transactionsPath).records.map(tr => tr.id);
 
-    let operations = [];
+    const operations = [];
 
-    for (let [index, value] of transactionsIds.entries()) {
+    for (const [index, value] of transactionsIds.entries()) {
 
       console.log(`Transaction ID: ${value}, ${index}/${transactionsIds.length}`);
 
@@ -78,12 +78,12 @@ router.get('/public/stellar/operations', cors(), async (req, res, next) => {
       operations.push(...records);
     }
 
-    saveToFile({ path: filePath, data: operations, overwrite: true })
+    saveToFile({ path: filePath, data: operations, overwrite: true });
 
     console.log(`Processed request.`);
     res.send(operations);
   }
-})
+});
 
 // get all transactions
 router.get('/public/stellar/transactions', cors(), async (req, res, next) => {
@@ -117,7 +117,7 @@ router.get('/public/stellar/transactions', cors(), async (req, res, next) => {
       .limit(200)
       .call()
       .then(response => {
-        saveToFile({ path: filePath, data: response, overwrite: true })
+        saveToFile({ path: filePath, data: response, overwrite: true });
         console.log(`Processed request.`);
         res.send(response);
       })

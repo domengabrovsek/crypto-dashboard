@@ -11,7 +11,7 @@ const saveToFile = ({ path, data, overwrite }) => {
   fs.writeFileSync(path, JSON.stringify(data));
 
   console.log(`File saved to ${path}`);
-}
+};
 
 const readFromFile = (path) => {
 
@@ -19,11 +19,11 @@ const readFromFile = (path) => {
   const encoding = 'utf8';
 
   return JSON.parse(fs.readFileSync(path, { encoding }));
-}
+};
 
 const exists = (path) => {
   return fs.existsSync(path);
-}
+};
 
 module.exports = {
   saveToFile,

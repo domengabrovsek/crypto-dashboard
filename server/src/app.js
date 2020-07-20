@@ -3,9 +3,9 @@
 const express = require('express');
 const cors = require('cors');
 
-const commonRouter = require('./src/routers/common');
-const krakenRouter = require('./src/routers/kraken');
-const stellarRouter = require('./src/routers/stellar');
+const commonRouter = require('./routers/common');
+const krakenRouter = require('./routers/kraken');
+const stellarRouter = require('./routers/stellar');
 
 const app = express();
 const port = 3030;
@@ -14,8 +14,8 @@ const port = 3030;
 app.use((req, res, next) => {
   console.log('\n-------------------------------------');
   console.log(`\nReceived request.`);
-  console.log("\x1b[36m", "URI: ", "\x1b[37m", req.originalUrl)
-  console.log("\x1b[36m", "Method: ", "\x1b[37m", req.method)
+  console.log("\x1b[36m", "URI: ", "\x1b[37m", req.originalUrl);
+  console.log("\x1b[36m", "Method: ", "\x1b[37m", req.method);
 
   next();
 });
@@ -37,7 +37,6 @@ app.use(express.json());
 app.use(commonRouter);
 app.use(krakenRouter);
 app.use(stellarRouter);
-
 
 
 // start server
