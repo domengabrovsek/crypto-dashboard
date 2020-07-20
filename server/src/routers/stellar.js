@@ -7,9 +7,10 @@ const express = require('express');
 const router = new express.Router();
 const StellarSdk = require('stellar-sdk');
 const server = new StellarSdk.Server('https://horizon.stellar.org');
+const appRootFolder = path.dirname(require.main.filename);
 
 const { readFromFile, saveToFile, exists } = require('../fs/fileHelpers');
-const { accounts } = readFromFile(path.join(__dirname, '../../config.json'));
+const { accounts } = readFromFile(path.join(appRootFolder, 'config/config.json'));
 
 // get all payments
 router.get('/public/stellar/payments', cors(), async (req, res, next) => {
