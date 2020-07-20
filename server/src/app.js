@@ -1,42 +1,47 @@
 'use strict';
 
 const express = require('express');
-const cors = require('cors');
 
 const commonRouter = require('./routers/common');
 const krakenRouter = require('./routers/kraken');
 const stellarRouter = require('./routers/stellar');
 
-const app = express();
-const port = 3030;
+function startServer() {
 
-// custom middleware to log requests to console for every endpoint
-app.use((req, res, next) => {
-  console.log('\n-------------------------------------');
-  console.log(`\nReceived request.`);
-  console.log("\x1b[36m", "URI: ", "\x1b[37m", req.originalUrl);
-  console.log("\x1b[36m", "Method: ", "\x1b[37m", req.method);
+  const { port } = require('./config/config.json');
+  const app = express();
 
-  next();
-});
+  // custom middleware to log requests to console for every endpoint
+  app.use((req, res, next) => {
+    console.log('\n-------------------------------------');
+    console.log(`\nReceived request.`);
+    console.log("\x1b[36m", "URI: ", "\x1b[37m", req.originalUrl);
+    console.log("\x1b[36m", "Method: ", "\x1b[37m", req.method);
 
-// error handling middleware
-app.use((error, req, res, next) => {
-  console.error("URI: ", req.originalUrl);
-  console.error("Method: ", req.method);
-  console.error("Status Code: ", error.statusCode);
-  console.error("Error Message:", error.error.message);
+    next();
+  });
 
-  res.status(500).send();
-});
+  // error handling middleware
+  app.use((error, req, res, next) => {
+    console.error("URI: ", req.originalUrl);
+    console.error("Method: ", req.method);
+    console.error("Status Code: ", error.statusCode);
+    console.error("Error Message:", error.error.message);
 
-// set server to work with json
-app.use(express.json());
+    res.status(500).send();
+  });
 
-// register routers
-app.use(commonRouter);
-app.use(krakenRouter);
-app.use(stellarRouter);
+  // set server to work with json
+  app.use(express.json());
 
-// start server
-app.listen(port, () => console.log(`Server started on port ${port}`));
+  // register routers
+  app.use(commonRouter);
+  app.use(krakenRouter);
+  app.use(stellarRouter);
+
+  // start server
+  app.listen(port, () => console.log(`Server started on port ${port}`));
+
+}
+
+startServer();
