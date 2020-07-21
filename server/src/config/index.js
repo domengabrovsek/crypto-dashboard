@@ -13,6 +13,12 @@ module.exports = {
   // crypto accounts
   accounts: {
     XLM: ""
-  }
+  },
 
+  baseUri: {
+    kraken: {
+      public: 'https://api.kraken.com/0/public',
+      private: 'https://api.kraken.com/0/private'
+    }
+  }
 };
