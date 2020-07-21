@@ -1,0 +1,74 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:json/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "impliedStrict": true
+  },
+  "rules": {
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "no-caller": "error",
+    "accessor-pairs": "error",
+    "no-dupe-args": "error",
+    "no-dupe-keys": "error",
+    "no-empty-function": "error",
+    "no-extend-native": "error",
+    "no-extra-bind": "error",
+    "no-extra-label": "error",
+    "no-extra-semi": "error",
+    "no-floating-decimal": "error",
+    "no-implicit-globals": "error",
+    "no-implied-eval": "error",
+    "no-multi-spaces": "error",
+    "no-iterator": "error",
+    "no-irregular-whitespace": "error",
+    "no-labels": "error",
+    "no-new": "error",
+    "no-new-func": "error",
+    "no-new-wrappers": "error",
+    "no-proto": "error",
+    "no-useless-call": "error",
+    "no-unreachable": "error",
+    "no-void": "error",
+    "no-with": "error",
+    "prefer-promise-reject-errors": "error",
+    "no-label-var": "error",
+    "no-unused-vars": "off",
+    "no-whitespace-before-property": "error",
+    "no-multiple-empty-lines": "error",
+    "no-unneeded-ternary": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "no-useless-rename": "error",
+    "eol-last": "error",
+    "comma-spacing": "error",
+    "no-undef": "error",
+    "curly": "error",
+    "block-scoped-var": "error",
+    "no-else-return": "error",
+    "block-spacing": "error",
+    "no-mixed-spaces-and-tabs": "error",
+    "no-trailing-spaces": "error",
+    "space-before-blocks": "error",
+    "space-infix-ops": "error",
+    "spaced-comment": "error",
+    "no-const-assign": "error",
+    "no-duplicate-imports": "error"
+  }
+}

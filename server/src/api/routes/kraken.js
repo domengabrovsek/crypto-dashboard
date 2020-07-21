@@ -4,7 +4,7 @@ const express = require('express');
 const router = new express.Router();
 const rp = require('request-promise');
 
-const baseUri = 'https://api.kraken.com/0/public'
+const baseUri = 'https://api.kraken.com/0/public';
 
 router.get('/public/kraken/data', async (req, res) => {
 
@@ -31,7 +31,7 @@ router.get('/public/kraken/data', async (req, res) => {
       console.log(`Processed request.`);
       console.log("\x1b[36m", "Response: ", "\x1b[37m", result);
       res.send(result);
-    })
-})
+    });
+});
 
 module.exports = router;
