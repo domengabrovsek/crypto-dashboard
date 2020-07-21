@@ -1,3 +1,5 @@
+const config = require('./config.json');
+
 // set environment
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -15,10 +17,10 @@ module.exports = {
     XLM: ""
   },
 
-  baseUri: {
-    kraken: {
-      public: 'https://api.kraken.com/0/public',
-      private: 'https://api.kraken.com/0/private'
-    }
+  kraken: {
+    publicUri: 'https://api.kraken.com/0/public',
+    privateUri: 'https://api.kraken.com/0/private',
+    apiKey: config.kraken.apiKey,
+    apiPrivateKey: config.kraken.apiPrivateKey
   }
 };

@@ -5,7 +5,7 @@ const Logger = require('./loaders/logger');
 
 async function startServer() {
 
-  const { port } = require('./config/config.json');
+  const { port } = require('./config/index');
   const app = express();
 
   // load on startup
