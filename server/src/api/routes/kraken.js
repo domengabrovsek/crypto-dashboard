@@ -72,4 +72,27 @@ router.get('/kraken/trade', async (req, res) => {
     });
 });
 
+router.get('/kraken/ledgers', async (req, res) => {
+
+  // withdrawal|deposit|trade|margin|all (default is all)
+  const type = req.query.type || 'all';
+
+  kraken.api('Ledgers', { type })
+    .then(data => res.send(data.result))
+    .catch(err => {
+      Logger.error(err);
+      res.status(500).send();
+    });
+});
+
+router.get('/kraken/ledgers', async (req, res) => {
+
+  kraken.api('QueryLedgers', { id: req.query.id })
+    .then(data => res.send(data.result))
+    .catch(err => {
+      Logger.error(err);
+      res.status(500).send();
+    });
+});
+
 module.exports = router;
