@@ -2,9 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const commonRouter = require('../api/routes/common');
-const krakenRouter = require('../api/routes/kraken');
-const stellarRouter = require('../api/routes/stellar');
+const commonRouter = require('../routes/common');
+const krakenRouter = require('../routes/kraken');
+const stellarRouter = require('../routes/stellar');
 const LoggerInstance = require('./logger');
 
 module.exports = ({ app }) => {

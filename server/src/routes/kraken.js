@@ -8,11 +8,11 @@ const methods = {
 
 const express = require('express');
 const router = new express.Router();
-const config = require('../../config/index');
+const config = require('../config/index');
 
 const KrakenClient = require('kraken-api');
 const kraken = new KrakenClient(config.kraken.apiKey, config.kraken.apiPrivateKey);
-const Logger = require('../../loaders/logger');
+const Logger = require('../loaders/logger');
 
 router.get('/kraken/balance', async (req, res) => {
   kraken.api('Balance')
