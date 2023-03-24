@@ -4,7 +4,8 @@
   "description": "## Description",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint ./src --ext .ts --config package.json",
+    "lint:fix": "eslint ./src --ext .ts --config package.json --fix"
   },
   "keywords": [],
   "author": "Domen Gabrovšek",
@@ -24,5 +25,26 @@
     "husky": "^8.0.3",
     "nodemon": "^2.0.22",
     "typescript": "^5.0.2"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": "error",
+      "no-console": "off"
+    }
   }
 }
