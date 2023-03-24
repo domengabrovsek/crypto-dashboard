@@ -16,6 +16,11 @@ server.get('/kraken/balance', async (request, reply) => {
   reply.send(response);
 });
 
+server.get('/kraken/trade-balance', async (request, reply) => {
+  const response = await invokeKrakenApi('TradeBalance');
+  reply.send(response);
+});
+
 server.listen({
   port: appConfig.get('Port'),
   host: appConfig.get('Host')

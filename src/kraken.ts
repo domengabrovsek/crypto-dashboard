@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 import { appConfig } from './config/appConfig';
 
-type KrakenMethod = 'Balance';
+type KrakenMethod = 'Balance' | 'TradeBalance';
 
 const getKrakenSignature = (path: string, request: string, secret: string, nonce: number) => {
   const secret_buffer = Buffer.from(secret, 'base64');

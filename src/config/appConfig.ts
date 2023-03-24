@@ -39,9 +39,14 @@ export const appConfig = convict({
     },
     Endpoints: {
       Balance: {
-        doc: 'The endpoint for the balance.',
+        doc: 'The endpoint for the account balance.',
         format: 'String',
         default: '/private/Balance'
+      },
+      TradeBalance: {
+        doc: 'The endpoint for the trade balance.',
+        format: 'String',
+        default: '/private/TradeBalance'
       }
     }
   }
