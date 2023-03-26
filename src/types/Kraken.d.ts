@@ -1,4 +1,4 @@
-export type KrakenMethod = 'Balance' | 'TradeBalance' | 'Staking' | 'TradesHistory'
+export type KrakenMethod = 'Balance' | 'TradeBalance' | 'Staking' | 'TradesHistory' | 'Ledgers'
 export type KrakenStakingTransactionType = 'bonding' | 'reward' | 'unbonded';
 export type KrakenStakingTransactionStatus = 'Initial' | 'Pending' | 'Settled' | 'Success' | 'Failed';
 export type KrakenBalanceResponse = Record<string, string>;
@@ -40,3 +40,21 @@ export interface KrakenStakingTransaction {
   bond_start: number,
   bond_end: number
 }
+
+export interface KrakenLedger {
+  aclass: string,
+  amount: string,
+  asset: string,
+  balance: string,
+  fee: string,
+  refid: string,
+  time: number,
+  type: string
+  subtype: string
+}
+
+export interface KrakenLedgerResponse {
+  count: number,
+  ledger: Record<string, KrakenLedger>
+}
+

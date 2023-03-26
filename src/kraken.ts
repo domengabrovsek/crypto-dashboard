@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
 import { appConfig } from './config/appConfig';
-import { KrakenMethod, KrakenBalanceResponse, KrakenStakingTransactionResponse, KrakenTradeHistoryResponse, KrakenTrade } from './types/Kraken';
+import { KrakenMethod, KrakenBalanceResponse, KrakenStakingTransactionResponse, KrakenTradeHistoryResponse, KrakenTrade, KrakenLedgerResponse } from './types/Kraken';
 
 const getKrakenSignature = (path: string, request: string, secret: string, nonce: number) => {
 
@@ -69,10 +69,35 @@ export const getAccountBalance = async () => {
   }
 }
 
+interface StakingTransaction {
+  method: string,
+  asset: string,
+  amount: string,
+  fee: string,
+  date: string,
+  status: string,
+  type: string,
+  bondStart: string,
+  bondEnd: string
+}
+
 export const getStakingTransactions = async () => {
   try {
     const response: KrakenStakingTransactionResponse = await invokeKrakenApi('Staking');
-    return response;
+
+    const stakingTransactions: StakingTransaction[] = response.map((transaction) => ({
+      method: transaction.method,
+      asset: transaction.asset,
+      amount: transaction.amount,
+      fee: transaction.fee,
+      date: new Date(transaction.time * 1000).toISOString(),
+      status: transaction.status,
+      type: transaction.type,
+      bondStart: new Date(transaction.bond_start * 1000).toISOString(),
+      bondEnd: new Date(transaction.bond_end * 1000).toISOString()
+    }));
+
+    return stakingTransactions;
   } catch (error) {
     console.error(error);
     throw error;
@@ -115,3 +140,26 @@ export const getTradeHistory = async () => {
     throw error;
   }
 };
+
+export const getLedgerInfo = async () => {
+  try {
+    const response: KrakenLedgerResponse = await invokeKrakenApi('Ledgers');
+
+    const ledgerInfo = Object
+      .values(response.ledger)
+      .map((ledger) => ({
+        refId: ledger.refid,
+        time: new Date(ledger.time * 1000).toISOString(),
+        type: ledger.type,
+        asset: ledger.asset,
+        amount: ledger.amount,
+        fee: ledger.fee,
+        balance: ledger.balance
+      }));
+
+    return ledgerInfo;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

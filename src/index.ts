@@ -1,5 +1,5 @@
 import { appConfig } from './config/appConfig';
-import { getStakingTransactions, getAccountBalance, getTradeHistory } from './kraken';
+import { getStakingTransactions, getAccountBalance, getTradeHistory, getLedgerInfo } from './kraken';
 
 import fastify from 'fastify';
 import cors from '@fastify/cors';
@@ -37,6 +37,11 @@ server.get('/kraken/staking', async (request, reply) => {
 
 server.get('/kraken/trade-history', async (request, reply) => {
   const response = await getTradeHistory();
+  reply.send(response);
+});
+
+server.get('/kraken/ledgers', async (request, reply) => {
+  const response = await getLedgerInfo();
   reply.send(response);
 });
 

@@ -57,6 +57,11 @@ export const appConfig = convict({
         doc: 'The endpoint for the staking balance.',
         format: 'String',
         default: '/private/Staking/Transactions'
+      },
+      Ledgers: {
+        doc: 'The endpoint for the ledgers.',
+        format: 'String',
+        default: '/private/Ledgers'
       }
     }
   }
