@@ -1,10 +1,10 @@
 import crypto from 'crypto';
 
 import { appConfig } from './config/appConfig';
-
-type KrakenMethod = 'Balance' | 'TradeBalance' | 'Staking';
+import { KrakenMethod, KrakenBalanceResponse, KrakenStakingTransactionResponse, KrakenTradeHistoryResponse, KrakenTrade, KrakenLedgerResponse } from './types/Kraken';
 
 const getKrakenSignature = (path: string, request: string, secret: string, nonce: number) => {
+
   const secret_buffer = Buffer.from(secret, 'base64');
   const hash = crypto.createHash('sha256');
   const hmac = crypto.createHmac('sha512', secret_buffer);
@@ -14,7 +14,7 @@ const getKrakenSignature = (path: string, request: string, secret: string, nonce
   return hmac_digest;
 };
 
-export const invokeKrakenApi = async (method: KrakenMethod) => {
+const invokeKrakenApi = async (method: KrakenMethod) => {
 
   const baseUrl = appConfig.get('Kraken.BaseUrl');
   const apiVersion = appConfig.get('Kraken.ApiVersion');
@@ -32,7 +32,7 @@ export const invokeKrakenApi = async (method: KrakenMethod) => {
 
   const signature = getKrakenSignature(path, body, privateKey, nonce);
 
-  console.log('Invoking Kraken API', { url, path });
+  console.log(`Invoking Kraken API - '${url}'`);
 
   try {
     const response = await fetch(url, {
@@ -49,11 +49,9 @@ export const invokeKrakenApi = async (method: KrakenMethod) => {
       const { result } = await response.json();
       const status = response.status;
 
-      console.log(`Kraken API response: ${status}, ${result}`);
+      console.log(`Kraken API response: ${status}`);
       return result;
     }
-
-    console.log(response);
 
   } catch (error) {
     console.error(error);
@@ -61,33 +59,107 @@ export const invokeKrakenApi = async (method: KrakenMethod) => {
   }
 }
 
-type Assets = Record<string, string>;
 export const getAccountBalance = async () => {
-
-  const response: Assets = await invokeKrakenApi('Balance');
-  return response;
+  try {
+    const response: KrakenBalanceResponse = await invokeKrakenApi('Balance');
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
-
-type StakingTransactionType = 'bonding' | 'reward' | 'unbonded';
-type StakingTransactionStatus = 'Initial' | 'Pending' | 'Settled' | 'Success' | 'Failed';
 
 interface StakingTransaction {
   method: string,
-  aclass: string,
   asset: string,
-  refid: string,
   amount: string,
   fee: string,
-  time: number,
-  status: StakingTransactionStatus,
-  type: StakingTransactionType,
-  bond_start: number,
-  bond_end: number
-};
+  date: string,
+  status: string,
+  type: string,
+  bondStart: string,
+  bondEnd: string
+}
 
 export const getStakingTransactions = async () => {
+  try {
+    const response: KrakenStakingTransactionResponse = await invokeKrakenApi('Staking');
 
-  const response: StakingTransaction[] = await invokeKrakenApi('Staking');
+    const stakingTransactions: StakingTransaction[] = response.map((transaction) => ({
+      method: transaction.method,
+      asset: transaction.asset,
+      amount: transaction.amount,
+      fee: transaction.fee,
+      date: new Date(transaction.time * 1000).toISOString(),
+      status: transaction.status,
+      type: transaction.type,
+      bondStart: new Date(transaction.bond_start * 1000).toISOString(),
+      bondEnd: new Date(transaction.bond_end * 1000).toISOString()
+    }));
 
-  return response;
+    return stakingTransactions;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
+
+interface Trade {
+  pair: string,
+  date: string,
+  type: string,
+  orderType: string,
+  price: string,
+  cost: string,
+  fee: string,
+  volume: string,
+  margin: string,
+  leverage: string
+}
+
+export const getTradeHistory = async () => {
+  try {
+    const response: KrakenTradeHistoryResponse = await invokeKrakenApi('TradesHistory');
+    const trades: Trade[] = Object
+      .values(response.trades)
+      .map((trade: KrakenTrade) => ({
+        pair: trade.pair,
+        date: new Date(trade.time * 1000).toISOString(),
+        type: trade.type,
+        orderType: trade.ordertype,
+        price: trade.price,
+        cost: trade.cost,
+        fee: trade.fee,
+        volume: trade.vol,
+        margin: trade.margin,
+        leverage: trade.leverage
+      }));
+    return trades;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getLedgerInfo = async () => {
+  try {
+    const response: KrakenLedgerResponse = await invokeKrakenApi('Ledgers');
+
+    const ledgerInfo = Object
+      .values(response.ledger)
+      .map((ledger) => ({
+        refId: ledger.refid,
+        time: new Date(ledger.time * 1000).toISOString(),
+        type: ledger.type,
+        asset: ledger.asset,
+        amount: ledger.amount,
+        fee: ledger.fee,
+        balance: ledger.balance
+      }));
+
+    return ledgerInfo;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
