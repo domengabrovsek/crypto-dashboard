@@ -34,7 +34,7 @@ This will start the server on port 3000 by default.
 
 Once the server is running, you can access the dashboard at http://localhost:3000. The dashboard will display your cryptocurrency assets from each exchange, grouped by asset type and exchange. You can click on each asset to view more details, including the current price, trading volume, and price history.
 
-### Currently supported exchanges
+### Currently supported exchanges (just API for now)
 
 - [Kraken](https://www.kraken.com/)
 
