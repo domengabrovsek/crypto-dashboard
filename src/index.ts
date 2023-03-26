@@ -5,7 +5,22 @@ import fastify from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 
-const server = fastify({ logger: true });
+const envToLogger = {
+  development: {
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        translateTime: 'HH:MM:ss',
+        ignore: 'pid,hostname'
+      }
+    }
+  },
+  production: true,
+  test: false
+}
+
+const server = fastify({ logger: envToLogger['development'] });
 
 server.register(cors);
 server.register(helmet);
