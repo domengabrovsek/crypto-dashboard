@@ -48,6 +48,11 @@ export const appConfig = convict({
         format: 'String',
         default: '/private/TradeBalance'
       },
+      TradesHistory: {
+        doc: 'The endpoint for the trade history.',
+        format: 'String',
+        default: '/private/TradesHistory'
+      },
       Staking: {
         doc: 'The endpoint for the staking balance.',
         format: 'String',

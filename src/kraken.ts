@@ -1,8 +1,7 @@
 import crypto from 'crypto';
 
 import { appConfig } from './config/appConfig';
-
-type KrakenMethod = 'Balance' | 'TradeBalance' | 'Staking';
+import { KrakenMethod, KrakenAssets, KrakenStakingTransactionResponse, KrakenTradeHistoryResponse, KrakenTrade } from './types/Kraken';
 
 const getKrakenSignature = (path: string, request: string, secret: string, nonce: number) => {
   const secret_buffer = Buffer.from(secret, 'base64');
@@ -14,7 +13,7 @@ const getKrakenSignature = (path: string, request: string, secret: string, nonce
   return hmac_digest;
 };
 
-export const invokeKrakenApi = async (method: KrakenMethod) => {
+const invokeKrakenApi = async (method: KrakenMethod) => {
 
   const baseUrl = appConfig.get('Kraken.BaseUrl');
   const apiVersion = appConfig.get('Kraken.ApiVersion');
@@ -61,33 +60,52 @@ export const invokeKrakenApi = async (method: KrakenMethod) => {
   }
 }
 
-type Assets = Record<string, string>;
 export const getAccountBalance = async () => {
 
-  const response: Assets = await invokeKrakenApi('Balance');
+  const response: KrakenAssets = await invokeKrakenApi('Balance');
   return response;
 }
 
-type StakingTransactionType = 'bonding' | 'reward' | 'unbonded';
-type StakingTransactionStatus = 'Initial' | 'Pending' | 'Settled' | 'Success' | 'Failed';
-
-interface StakingTransaction {
-  method: string,
-  aclass: string,
-  asset: string,
-  refid: string,
-  amount: string,
-  fee: string,
-  time: number,
-  status: StakingTransactionStatus,
-  type: StakingTransactionType,
-  bond_start: number,
-  bond_end: number
-};
-
 export const getStakingTransactions = async () => {
 
-  const response: StakingTransaction[] = await invokeKrakenApi('Staking');
+  const response: KrakenStakingTransactionResponse = await invokeKrakenApi('Staking');
 
   return response;
+};
+
+interface Trade {
+  pair: string,
+  date: string,
+  type: string,
+  orderType: string,
+  price: string,
+  cost: string,
+  fee: string,
+  volume: string,
+  margin: string,
+  leverage: string
+}
+
+export const getTradeHistory = async () => {
+  try {
+    const response: KrakenTradeHistoryResponse = await invokeKrakenApi('TradesHistory');
+    const trades: Trade[] = Object
+      .values(response.trades)
+      .map((trade: KrakenTrade) => ({
+        pair: trade.pair,
+        date: new Date(trade.time * 1000).toISOString(),
+        type: trade.type,
+        orderType: trade.ordertype,
+        price: trade.price,
+        cost: trade.cost,
+        fee: trade.fee,
+        volume: trade.vol,
+        margin: trade.margin,
+        leverage: trade.leverage
+      }));
+    return trades;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
