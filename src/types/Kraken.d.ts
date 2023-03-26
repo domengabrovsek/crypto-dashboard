@@ -1,7 +1,7 @@
 export type KrakenMethod = 'Balance' | 'TradeBalance' | 'Staking' | 'TradesHistory'
 export type KrakenStakingTransactionType = 'bonding' | 'reward' | 'unbonded';
 export type KrakenStakingTransactionStatus = 'Initial' | 'Pending' | 'Settled' | 'Success' | 'Failed';
-export type KrakenAssets = Record<string, string>;
+export type KrakenBalanceResponse = Record<string, string>;
 
 export interface KrakenTrade {
   ordertxid: string,

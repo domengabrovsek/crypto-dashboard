@@ -1,9 +1,10 @@
 import crypto from 'crypto';
 
 import { appConfig } from './config/appConfig';
-import { KrakenMethod, KrakenAssets, KrakenStakingTransactionResponse, KrakenTradeHistoryResponse, KrakenTrade } from './types/Kraken';
+import { KrakenMethod, KrakenBalanceResponse, KrakenStakingTransactionResponse, KrakenTradeHistoryResponse, KrakenTrade } from './types/Kraken';
 
 const getKrakenSignature = (path: string, request: string, secret: string, nonce: number) => {
+
   const secret_buffer = Buffer.from(secret, 'base64');
   const hash = crypto.createHash('sha256');
   const hmac = crypto.createHmac('sha512', secret_buffer);
@@ -31,7 +32,7 @@ const invokeKrakenApi = async (method: KrakenMethod) => {
 
   const signature = getKrakenSignature(path, body, privateKey, nonce);
 
-  console.log('Invoking Kraken API', { url, path });
+  console.log(`Invoking Kraken API - '${url}'`);
 
   try {
     const response = await fetch(url, {
@@ -48,11 +49,9 @@ const invokeKrakenApi = async (method: KrakenMethod) => {
       const { result } = await response.json();
       const status = response.status;
 
-      console.log(`Kraken API response: ${status}, ${result}`);
+      console.log(`Kraken API response: ${status}`);
       return result;
     }
-
-    console.log(response);
 
   } catch (error) {
     console.error(error);
@@ -61,16 +60,23 @@ const invokeKrakenApi = async (method: KrakenMethod) => {
 }
 
 export const getAccountBalance = async () => {
-
-  const response: KrakenAssets = await invokeKrakenApi('Balance');
-  return response;
+  try {
+    const response: KrakenBalanceResponse = await invokeKrakenApi('Balance');
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export const getStakingTransactions = async () => {
-
-  const response: KrakenStakingTransactionResponse = await invokeKrakenApi('Staking');
-
-  return response;
+  try {
+    const response: KrakenStakingTransactionResponse = await invokeKrakenApi('Staking');
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 interface Trade {
