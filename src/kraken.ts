@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 import { appConfig } from './config/appConfig';
 
-type KrakenMethod = 'Balance' | 'TradeBalance';
+type KrakenMethod = 'Balance' | 'TradeBalance' | 'Staking';
 
 const getKrakenSignature = (path: string, request: string, secret: string, nonce: number) => {
   const secret_buffer = Buffer.from(secret, 'base64');
@@ -26,6 +26,7 @@ export const invokeKrakenApi = async (method: KrakenMethod) => {
   const url = `${baseUrl}/${apiVersion}${endpoint}`;
   const path = `/${apiVersion}${endpoint}`;
 
+  // unique number which has to increase with each API call
   const nonce = Date.now() * 1000;
   const body = `nonce=${nonce}`;
 
@@ -59,3 +60,34 @@ export const invokeKrakenApi = async (method: KrakenMethod) => {
     throw error;
   }
 }
+
+type Assets = Record<string, string>;
+export const getAccountBalance = async () => {
+
+  const response: Assets = await invokeKrakenApi('Balance');
+  return response;
+}
+
+type StakingTransactionType = 'bonding' | 'reward' | 'unbonded';
+type StakingTransactionStatus = 'Initial' | 'Pending' | 'Settled' | 'Success' | 'Failed';
+
+interface StakingTransaction {
+  method: string,
+  aclass: string,
+  asset: string,
+  refid: string,
+  amount: string,
+  fee: string,
+  time: number,
+  status: StakingTransactionStatus,
+  type: StakingTransactionType,
+  bond_start: number,
+  bond_end: number
+};
+
+export const getStakingTransactions = async () => {
+
+  const response: StakingTransaction[] = await invokeKrakenApi('Staking');
+
+  return response;
+};

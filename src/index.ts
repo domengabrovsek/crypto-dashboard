@@ -5,7 +5,6 @@ import fastify from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 
-
 const server = fastify({ logger: true });
 
 server.register(cors);
@@ -16,8 +15,8 @@ server.get('/kraken/balance', async (request, reply) => {
   reply.send(response);
 });
 
-server.get('/kraken/trade-balance', async (request, reply) => {
-  const response = await invokeKrakenApi('TradeBalance');
+server.get('/kraken/staking', async (request, reply) => {
+  const response = await invokeKrakenApi('Staking');
   reply.send(response);
 });
 
