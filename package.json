@@ -1,0 +1,57 @@
+{
+  "name": "account-viewer",
+  "version": "1.0.0",
+  "description": "## Description",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint ./src --ext .ts --config package.json",
+    "lint:fix": "eslint ./src --ext .ts --config package.json --fix",
+    "start": "nodemon"
+  },
+  "keywords": [],
+  "author": "Domen Gabrovšek",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 18.15.0"
+  },
+  "dependencies": {
+    "@fastify/cors": "^8.2.1",
+    "@fastify/helmet": "^10.1.0",
+    "convict": "^6.2.4",
+    "fastify": "^4.15.0",
+    "jssha": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/convict": "^6.1.1",
+    "@types/node": "^18.15.7",
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.36.0",
+    "husky": "^8.0.3",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": "error",
+      "no-console": "off"
+    }
+  }
+}
