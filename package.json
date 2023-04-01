@@ -17,6 +17,7 @@
   "dependencies": {
     "@fastify/cors": "^8.2.1",
     "@fastify/helmet": "^10.1.0",
+    "bootstrap": "^5.2.3",
     "convict": "^6.2.4",
     "fastify": "^4.15.0"
   },
