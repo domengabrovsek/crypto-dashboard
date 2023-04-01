@@ -2,6 +2,7 @@ import crypto from 'crypto';
 
 import { appConfig } from './config/appConfig';
 import { KrakenMethod, KrakenBalanceResponse, KrakenStakingTransactionResponse, KrakenTradeHistoryResponse, KrakenTrade, KrakenLedgerResponse } from './types/Kraken';
+import { Balance, StakingTransaction, Trade } from '../shared/types/Account';
 
 const getKrakenSignature = (path: string, request: string, secret: string, nonce: number) => {
 
@@ -59,28 +60,31 @@ const invokeKrakenApi = async (method: KrakenMethod) => {
   }
 }
 
+/**
+ * Returns the account balance.
+ */
 export const getAccountBalance = async () => {
   try {
     const response: KrakenBalanceResponse = await invokeKrakenApi('Balance');
-    return response;
+
+    const balances: Balance[] = Object
+      .keys(response)
+      .map((asset) => ({
+        asset: asset,
+        balance: Number(response[asset])
+      }))
+      .filter((item) => item.balance > 0);
+
+    return balances;
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
 
-interface StakingTransaction {
-  method: string,
-  asset: string,
-  amount: string,
-  fee: string,
-  date: string,
-  status: string,
-  type: string,
-  bondStart: string,
-  bondEnd: string
-}
-
+/**
+ * Returns the staking transactions for the account.
+ */
 export const getStakingTransactions = async () => {
   try {
     const response: KrakenStakingTransactionResponse = await invokeKrakenApi('Staking');
@@ -104,18 +108,9 @@ export const getStakingTransactions = async () => {
   }
 };
 
-interface Trade {
-  pair: string,
-  date: string,
-  type: string,
-  orderType: string,
-  price: string,
-  cost: string,
-  fee: string,
-  volume: string,
-  margin: string,
-  leverage: string
-}
+/**
+ * Returns the trade history for the account.
+ */
 
 export const getTradeHistory = async () => {
   try {
@@ -141,6 +136,9 @@ export const getTradeHistory = async () => {
   }
 };
 
+/**
+ * Returns the ledger info for the account.
+ */
 export const getLedgerInfo = async () => {
   try {
     const response: KrakenLedgerResponse = await invokeKrakenApi('Ledgers');
