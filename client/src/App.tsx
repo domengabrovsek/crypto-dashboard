@@ -1,13 +1,25 @@
-import { useState } from 'react'
-import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { AccountBalanceTable } from './components/AccountBalanceTable';
+import { StakingTransactionsTable } from './components/StakingTransactionsTable';
+import { TradingHistoryTable } from './components/TradingHistoryTable';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <div className="App">
-      
-    </div>
+    <>
+      <div className="container text-center">
+        <div className="row">
+          <AccountBalanceTable />
+        </div>
+        <div className="row">
+          <StakingTransactionsTable />
+        </div>
+        <div className="row">
+          <TradingHistoryTable />
+        </div>
+      </div>
+    </>
   )
 }
 
