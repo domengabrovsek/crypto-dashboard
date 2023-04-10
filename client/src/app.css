@@ -1,0 +1,23 @@
+/* react main element */
+#app {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  display: flex;
+  height: 100vh;
+  margin: 0 auto; /* centers the container on the page */
+}
+
+.container{
+  display: flex;
+  flex-direction: column;
+  flex-basis: 50%;
+  margin: 2px;
+}
+
+.one {
+  flex: 1;
+  overflow: auto;
+}
