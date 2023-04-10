@@ -2,6 +2,7 @@ import { appConfig } from './config/appConfig';
 import { getStakingTransactions, getAccountBalance, getTradeHistory, getLedgerInfo } from './kraken';
 
 import fastify from 'fastify';
+import fastifyCaching from '@fastify/caching';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 
@@ -21,6 +22,11 @@ const envToLogger = {
 }
 
 const server = fastify({ logger: envToLogger['development'] });
+
+server.register(
+  fastifyCaching,
+  { privacy: fastifyCaching.privacy.NOCACHE }
+)
 
 server.register(cors);
 server.register(helmet);

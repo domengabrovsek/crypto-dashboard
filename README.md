@@ -6,12 +6,19 @@ Crypto Dashboard is a TypeScript-based web application built with Node.js and Fa
 
 ## Getting Started
 
-To run the application, you will need to have Node.js and NPM installed on your machine.
+To run the application, you will need to have Node.js (18 or higher) and NPM installed on your machine.
 
-Clone the repository and install the dependencies by running the following commands:
+Clone the repository:
 
 ```javascript
 ~ git clone https://github.com/<username>/crypto-dashboard.git
+```
+
+### Server
+
+Install the dependencies by running the following commands:
+
+```javascript
 ~ npm install
 ```
 
@@ -22,7 +29,7 @@ KRAKEN_API_KEY=<your-kraken-api-key>
 KRAKEN_SECRET=<your-kraken-secret>
 ```
 
-Start the application by running the following command:
+Start the server by running the following command:
 
 ```javascript
 npm run start
@@ -30,15 +37,26 @@ npm run start
 
 This will start the server on port 3000 by default.
 
-## Usage
+### Client 
 
-Once the server is running, you can access the dashboard at http://localhost:3000. The dashboard will display your cryptocurrency assets from each exchange, grouped by asset type and exchange. You can click on each asset to view more details, including the current price, trading volume, and price history.
+Navigate to `client` folder and install the dependencies by running the following commands:
 
-### Currently supported exchanges (just API for now)
+```javascript
+~ cd client
+~ npm install
+```
+
+Start the client app by running the following command:
+
+```javascript
+npm run dev
+```
+
+## Currently supported exchanges
 
 - [Kraken](https://www.kraken.com/)
 
-### Currently supported endpoints
+## Currently supported endpoints
 
 ```javascript
 POST /kraken/balance
