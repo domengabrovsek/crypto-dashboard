@@ -47,11 +47,14 @@ const invokeKrakenApi = async (method: KrakenMethod) => {
     });
 
     if (response.ok) {
-      const { result } = await response.json();
-      const status = response.status;
+      const fullResponse = await response.json();
 
-      console.log(`Kraken API response: ${status}`);
-      return result;
+      if (fullResponse?.error?.length > 0) {
+        console.error(`Kraken API error: ${JSON.stringify(fullResponse)}`);
+        throw new Error(fullResponse.error.join(', '));
+      }
+            
+      return fullResponse.result;
     }
 
   } catch (error) {
