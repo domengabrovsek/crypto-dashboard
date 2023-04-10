@@ -1,24 +1,41 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import { AccountBalanceTable } from './components/AccountBalanceTable';
-import { StakingTransactionsTable } from './components/StakingTransactionsTable';
-import { TradingHistoryTable } from './components/TradingHistoryTable';
+import { AccountBalanceTable } from './components/Tables/AccountBalanceTable';
+import { StakingTransactionsTable } from './components/Tables/StakingTransactionsTable';
+import { TradingHistoryTable } from './components/Tables/TradingHistoryTable';
+import { Header } from './components/Header/Header';
+import { Footer } from './components/Footer/Footer';
+import './App.css';
 
 function App() {
 
   return (
     <>
-      <div className="container text-center">
-        <div className="row">
-          <AccountBalanceTable />
+      <Header />
+
+      <div className="main-content">
+
+        <div className="container">
+          <div className="one">
+            <AccountBalanceTable />
+          </div>
+
+          <div className="one">
+            <StakingTransactionsTable />
+          </div>
+
         </div>
-        <div className="row">
-          <StakingTransactionsTable />
-        </div>
-        <div className="row">
-          <TradingHistoryTable />
+
+        <div className="container">
+          <div className="one">
+            <AccountBalanceTable />
+          </div>
+
+          <div className="one">
+            <TradingHistoryTable />
+          </div>
         </div>
       </div>
+
+      <Footer />
     </>
   )
 }
