@@ -1,8 +1,9 @@
 import crypto from 'crypto';
 
 import { appConfig } from './config/appConfig';
-import { KrakenMethod, KrakenBalanceResponse, KrakenStakingTransactionResponse, KrakenTradeHistoryResponse, KrakenTrade, KrakenLedgerResponse } from './types/Kraken';
+import { KrakenMethod, KrakenBalanceResponse, KrakenStakingTransactionResponse, KrakenTradeHistoryResponse, KrakenTrade, KrakenLedgerResponse, KrakenAsset } from './types/Kraken';
 import { Balance, StakingTransaction, Trade } from '../shared/types/Account';
+import { mapFromKrakenAsset } from './lib/AssetMapper';
 
 const getKrakenSignature = (path: string, request: string, secret: string, nonce: number) => {
 
@@ -53,7 +54,7 @@ const invokeKrakenApi = async (method: KrakenMethod) => {
         console.error(`Kraken API error: ${JSON.stringify(fullResponse)}`);
         throw new Error(fullResponse.error.join(', '));
       }
-            
+
       return fullResponse.result;
     }
 
@@ -72,11 +73,12 @@ export const getAccountBalance = async () => {
 
     const balances: Balance[] = Object
       .keys(response)
+      // filter out ZEUR as it's not a crypto asset
+      .filter((item) => item !== 'ZEUR')
       .map((asset) => ({
-        asset: asset,
-        balance: Number(response[asset])
-      }))
-      .filter((item) => item.balance > 0);
+        asset: mapFromKrakenAsset(asset as KrakenAsset),
+        balance: parseFloat(response[asset])
+      }));
 
     return balances;
   } catch (error) {

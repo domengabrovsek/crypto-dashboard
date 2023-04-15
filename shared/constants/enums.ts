@@ -1,11 +1,12 @@
 export enum Crypto {
-  Bitcoin = "bitcoin",
-  Ethereum = "ethereum",
-  Polkadot = "polkadot",
-  Chainlink = "chainlink",
-  Cardano = "cardano",
-  Stellar = "stellar",
-  Vechain = "vechain",
+  BTC = "bitcoin",
+  ETH = "ethereum",
+  XLM = "stellar",
+  ADA = "cardano",
+  DOT = "polkadot",
+  MATIC = "polygon",
+  ZEC = "zcash",
+  DOGE = "dogecoin"
 }
 
 export enum Fiat {
