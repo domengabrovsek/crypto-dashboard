@@ -1,4 +1,4 @@
-import { Balance, StakingTransaction, Trade } from "../../../shared/types/Account";
+import { AccountBalance, StakingTransaction, Trade } from "../../../shared/types/Account";
 
 async function get<TResponse>(url: string): Promise<TResponse> {
   const response = await fetch(url);
@@ -14,7 +14,7 @@ async function get<TResponse>(url: string): Promise<TResponse> {
 export const getAccountBalance = async () => {
 
   const url = 'http://localhost:3000/account-balance';
-  const response = await get<Balance[]>(url);
+  const response = await get<AccountBalance>(url);
 
   return response;
 }
