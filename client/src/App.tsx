@@ -29,9 +29,6 @@ function App() {
         </div>
 
         <div className="container">
-          <div className="one">
-            <AccountBalanceTable />
-          </div>
 
           <div className="one">
             <TradingHistoryTable />
