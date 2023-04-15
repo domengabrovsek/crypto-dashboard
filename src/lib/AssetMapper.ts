@@ -3,7 +3,6 @@ import { KrakenAsset } from '../types/Kraken';
 
 export const mapFromKrakenAsset = (asset: KrakenAsset) => {
   switch (asset) {
-
     case 'XXDG':
       return Crypto.DOGE;
     case 'XXBT':

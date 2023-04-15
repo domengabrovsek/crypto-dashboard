@@ -4,6 +4,11 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 export const appConfig = convict({
+  IsTest: {
+    doc: 'Is this a test environment?',
+    format: 'Boolean',
+    default: process.env.TEST ? true : false
+  },
   Port: {
     doc: 'The port to bind.',
     format: 'Number',
