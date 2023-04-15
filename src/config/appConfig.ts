@@ -64,5 +64,12 @@ export const appConfig = convict({
         default: '/private/Ledgers'
       }
     }
+  },
+  CoinGecko: {
+    BaseUrl: {
+      doc: 'The base url for the CoinGecko API.',
+      format: 'String',
+      default: 'https://api.coingecko.com/api/v3/coins/markets'
+    }
   }
 });

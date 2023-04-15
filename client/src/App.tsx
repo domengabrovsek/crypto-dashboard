@@ -4,12 +4,16 @@ import { TradingHistoryTable } from './components/Tables/TradingHistoryTable';
 import { Header } from './components/Header/Header';
 import { Footer } from './components/Footer/Footer';
 import './App.css';
+// import Tabs from './components/Tabs/Tabs';
 
 function App() {
 
   return (
     <>
       <Header />
+
+      {/* TODO: this will be used later */}
+      {/* <Tabs/> */}
 
       <div className="main-content">
 
