@@ -58,3 +58,22 @@ export interface KrakenLedgerResponse {
   ledger: Record<string, KrakenLedger>
 }
 
+export type KrakenAsset =
+  'XXBT' |
+  'XETH' |
+  'XXLM' |
+  'ADA' |
+  'ADA.S' |
+  'DOT' |
+  'DOT.S' |
+  'DOT28.S' |
+  'MATIC.S' |
+  'MATIC' |
+  'ZEUR' |
+  'XZEC' |
+  'ETHW' |
+  'XXDG' |
+  'XETC' |
+  'XETC.S' |
+  'XETC28.S'
+  ;

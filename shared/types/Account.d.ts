@@ -1,3 +1,14 @@
+export interface AssetInfo {
+  name: string,
+  ticker: string,
+  balance: number,
+  currentPrice: number,
+  valueEur?: number,
+  valueUsd?: number
+}
+
+export interface AccountBalance extends Array<AssetInfo> {}
+
 export interface Balance {
   asset: string,
   balance: number

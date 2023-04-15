@@ -13,7 +13,7 @@ async function get<TResponse>(url: string): Promise<TResponse> {
 
 export const getAccountBalance = async () => {
 
-  const url = 'http://localhost:3000/kraken/balance';
+  const url = 'http://localhost:3000/account-balance';
   const response = await get<Balance[]>(url);
 
   return response;
@@ -21,7 +21,7 @@ export const getAccountBalance = async () => {
 
 export const getStakingTransactions = async () => {
 
-  const url = 'http://localhost:3000/kraken/staking';
+  const url = 'http://localhost:3000/staking';
   const response = await get<StakingTransaction[]>(url);
 
   return response;
@@ -29,7 +29,7 @@ export const getStakingTransactions = async () => {
 
 export const getTradeHistory = async () => {
 
-  const url = 'http://localhost:3000/kraken/trade-history';
+  const url = 'http://localhost:3000/trade-history';
   const response = await get<Trade[]>(url);
 
   return response;
