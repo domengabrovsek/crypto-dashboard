@@ -7,37 +7,45 @@ import {
   getLedgerInfo
 } from '../kraken';
 
-import { getCurrentPrice } from '../coingecko';
+import { getTokenInfo } from '../coingecko';
 import { Crypto } from 'shared/constants/enums';
-import { AccountBalance } from 'shared/types/Account';
+import { mapFromKrakenAsset } from '../lib/AssetMapper';
+import { KrakenAsset } from '../types/Kraken';
+import { AccountBalance } from '../../shared/types/Account';
 
 export const krakenRoutes = async (server: FastifyInstance) => {
 
   server.get('/account-balance', async (request, reply) => {
-
     // list of all kraken assets and their balance
-    const krakenAssets = await getAccountBalance();
+    const allAssets = await getAccountBalance();
 
     // get the current price of each asset
-    const currentPrices = await Promise.all(krakenAssets.map(async ({ asset }) => {
-      return getCurrentPrice(asset as Crypto);
-    }));
+    const promises = Object.keys(allAssets)
+      .filter(ticker => ticker !== 'ZEUR')
+      .map(ticker => mapFromKrakenAsset(ticker as KrakenAsset))
+      .map(asset => getTokenInfo(asset as Crypto));
+
+    const tokensInfo = await Promise.all(promises);
 
     // map the current price to the asset
-    const accountBalance: AccountBalance = currentPrices.map((currentPrice) => {
-
-      const krakenAsset = krakenAssets.find(({ asset }) => asset === currentPrice.id);
+    const response: AccountBalance = Object.keys(allAssets).map(krakenTicker => {
+      const balance = allAssets[krakenTicker as KrakenAsset];
+      const tokenInfo = tokensInfo.find(token => token.id === mapFromKrakenAsset(krakenTicker as KrakenAsset))
 
       return {
-        name: currentPrice.name,
-        ticker: currentPrice.id,
-        balance: krakenAsset?.balance || 0,
-        currentPrice: currentPrice.price,
-        valueEur: currentPrice.price * (krakenAsset?.balance || 0)
+        name: tokenInfo?.name || '',
+        ticker: tokenInfo?.symbol || '',
+        krakenTicker: krakenTicker,
+        balance: balance,
+        currentPrice: tokenInfo?.price || 0,
+        priceEur: parseFloat(((tokenInfo?.price || 0) * balance).toFixed(5)),
+        isStaking: krakenTicker.includes('.S')
       }
-    });
+    })
+      .filter(token => token.priceEur > 0)
+      .sort((a, b) => a.krakenTicker > b.krakenTicker ? 1 : -1);
 
-    reply.send(accountBalance);
+    reply.send(response);
   });
 
   server.get('/staking', async (request, reply) => {
