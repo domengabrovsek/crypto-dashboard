@@ -1,16 +1,18 @@
 export interface AssetInfo {
   name: string,
   ticker: string,
+  krakenTicker: string,
   balance: number,
   currentPrice: number,
-  valueEur?: number,
-  valueUsd?: number
+  priceEur?: number,
+  valueUsd?: number,
+  isStaking: boolean
 }
 
 export interface AccountBalance extends Array<AssetInfo> {}
 
 export interface Balance {
-  asset: string,
+  ticker: string,
   balance: number
 }
 
