@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 
 import { Crypto, Fiat } from '../../shared/constants/enums';
-import { getCurrentPrice } from '../coingecko';
+import { getTokenInfo } from '../coingecko';
 
 export const cryptoRoutes = async (server: FastifyInstance) => {
 
@@ -14,7 +14,7 @@ export const cryptoRoutes = async (server: FastifyInstance) => {
 
     const { crypto, fiat } = request.query;
 
-    const response = await getCurrentPrice(crypto, fiat);
+    const response = await getTokenInfo(crypto, fiat);
     reply.send(response);
 
   });
