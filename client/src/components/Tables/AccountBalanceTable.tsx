@@ -11,7 +11,7 @@ export function AccountBalanceTable() {
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      const result = await getAccountBalance()
+      const result = await getAccountBalance();
       setAccountBalance(result);
     };
 
