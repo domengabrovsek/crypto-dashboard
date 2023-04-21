@@ -76,5 +76,22 @@ export const appConfig = convict({
       format: 'String',
       default: 'https://api.coingecko.com/api/v3/coins/markets'
     }
+  },
+  Redis: {
+    Host: {
+      doc: 'The host for the Redis server.',
+      format: 'String',
+      default: process.env.REDIS_HOST || 'localhost'
+    },
+    Port: {
+      doc: 'The port for the Redis server.',
+      format: 'Number',
+      default: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379
+    },
+    DefaultCacheTime: {
+      doc: 'The default cache time for Redis.',
+      format: 'Number',
+      default: 60 * 5 // 5 minutes
+    }
   }
 });
