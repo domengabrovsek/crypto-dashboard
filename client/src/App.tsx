@@ -1,16 +1,17 @@
-import { AccountBalanceTable } from './components/Tables/AccountBalanceTable';
-import { StakingTransactionsTable } from './components/Tables/StakingTransactionsTable';
-import { TradingHistoryTable } from './components/Tables/TradingHistoryTable';
-import { Header } from './components/Header/Header';
-import { Footer } from './components/Footer/Footer';
+// import { AccountBalanceTable } from './components/Tables/AccountBalanceTable';
+// import { StakingTransactionsTable } from './components/Tables/StakingTransactionsTable';
+// import { TradingHistoryTable } from './components/Tables/TradingHistoryTable';
+// import { Header } from './components/Header/Header';
+// import { Footer } from './components/Footer/Footer';
 import './App.css';
+import Dashboard from './components/Dashboard/Dashboard';
 // import Tabs from './components/Tabs/Tabs';
 
 function App() {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
 
       {/* TODO: this will be used later */}
       {/* <Tabs/> */}
@@ -18,7 +19,10 @@ function App() {
       <div className="main-content">
 
         <div className="container">
-          <div className="one">
+
+          <Dashboard/>
+
+          {/* <div className="one">
             <AccountBalanceTable />
           </div>
 
@@ -32,11 +36,11 @@ function App() {
 
           <div className="one">
             <TradingHistoryTable />
-          </div>
+          </div> */}
         </div>
       </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }
