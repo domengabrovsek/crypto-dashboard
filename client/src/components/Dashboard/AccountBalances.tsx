@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Title from './Title';
 
 import { getAccountBalance } from "../../services/api";
 import { AccountBalance } from "../../../../shared/types/Account";
+import AccountBalanceSummary from './AccountBalanceSummary';
+import Title from './Title';
 
 export default function AccountBalanceTable() {
 
@@ -27,17 +28,22 @@ export default function AccountBalanceTable() {
   }
 
   return (
-    <React.Fragment>
+    <>
+
+      <AccountBalanceSummary
+        totalValue={accountBalances.reduce((acc, cur) => acc + cur.priceEur, 0)}
+        numberOfAssets={accountBalances.length}
+      />
+
       <Title>Account Balance</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell>Ticker [K]</TableCell>
             <TableCell>Ticker</TableCell>
-            <TableCell>Balance</TableCell>
+            <TableCell>Amount</TableCell>
             <TableCell>Price</TableCell>
-            <TableCell>Price [EUR]</TableCell>
+            <TableCell>Value [EUR]</TableCell>
             <TableCell>Is Staking</TableCell>
           </TableRow>
         </TableHead>
@@ -45,8 +51,7 @@ export default function AccountBalanceTable() {
           {accountBalances.map((row) => (
             <TableRow key={row.krakenTicker}>
               <TableCell>{row.name}</TableCell>
-              <TableCell>{row.krakenTicker}</TableCell>
-              <TableCell>{row.ticker.toUpperCase()}</TableCell>
+              <TableCell>{row.krakenTicker} {`(${row.ticker.toUpperCase()})`}</TableCell>
               <TableCell>{row.balance}</TableCell>
               <TableCell>{row.currentPrice}</TableCell>
               <TableCell>{row.priceEur}</TableCell>
@@ -55,6 +60,6 @@ export default function AccountBalanceTable() {
           ))}
         </TableBody>
       </Table>
-    </React.Fragment>
+    </>
   );
 }
