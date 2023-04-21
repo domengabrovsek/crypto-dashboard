@@ -11,18 +11,18 @@ import { AccountBalance } from "../../../../shared/types/Account";
 
 export default function AccountBalanceTable() {
 
-  const [accountBalance, setAccountBalance] = useState<AccountBalance>([]);
+  const [accountBalances, setAccountBalances] = useState<AccountBalance>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await getAccountBalance();
-      setAccountBalance(response);
+      setAccountBalances(response);
     }
 
     fetchData();
   }, []);
 
-  if (!accountBalance || accountBalance.length === 0) {
+  if (!accountBalances || accountBalances.length === 0) {
     return <p>Loading...</p>
   }
 
@@ -42,11 +42,11 @@ export default function AccountBalanceTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {accountBalance.map((row) => (
+          {accountBalances.map((row) => (
             <TableRow key={row.krakenTicker}>
               <TableCell>{row.name}</TableCell>
               <TableCell>{row.krakenTicker}</TableCell>
-              <TableCell>{row.ticker}</TableCell>
+              <TableCell>{row.ticker.toUpperCase()}</TableCell>
               <TableCell>{row.balance}</TableCell>
               <TableCell>{row.currentPrice}</TableCell>
               <TableCell>{row.priceEur}</TableCell>
