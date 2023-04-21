@@ -6,7 +6,7 @@ Crypto Dashboard is a TypeScript-based web application built with Node.js and Fa
 
 ## Getting Started
 
-To run the application, you will need to have Node.js (18 or higher) and NPM installed on your machine.
+To run the application, you will need to have Node.js (18 or higher) and Docker.
 
 Clone the repository:
 
@@ -29,13 +29,11 @@ KRAKEN_API_KEY=<your-kraken-api-key>
 KRAKEN_SECRET=<your-kraken-secret>
 ```
 
-Start the server by running the following command:
+Start the server by running the following command. The server will run on `http://localhost:3000`. The redis client will run on `http://localhost:6379`.
 
 ```javascript
 npm run start
 ```
-
-This will start the server on port 3000 by default.
 
 ### Client 
 
@@ -46,7 +44,7 @@ Navigate to `client` folder and install the dependencies by running the followin
 ~ npm install
 ```
 
-Start the client app by running the following command:
+Start the client app by running the following command. The application will run on `https://localhost:5173`.
 
 ```javascript
 npm run dev
@@ -59,10 +57,10 @@ npm run dev
 ## Currently supported endpoints
 
 ```javascript
-POST /kraken/balance
-POST /kraken/staking
-POST /kraken/trade-history
-POST /kraken/ledgers
+POST /account-balance
+POST /staking
+POST /trade-history
+POST /ledgers
 ```
 
 ## Contributing
