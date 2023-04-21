@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint ./src --ext .ts --config package.json",
     "lint:fix": "eslint ./src --ext .ts --config package.json --fix",
-    "start": "nodemon"
+    "start": "docker-compose up -d && nodemon"
   },
   "keywords": [],
   "author": "Domen Gabrovšek",
@@ -20,7 +20,8 @@
     "@fastify/helmet": "^10.1.0",
     "bootstrap": "^5.2.3",
     "convict": "^6.2.4",
-    "fastify": "^4.15.0"
+    "fastify": "^4.15.0",
+    "ioredis": "^5.3.2"
   },
   "devDependencies": {
     "@types/convict": "^6.1.1",
