@@ -1,32 +1,36 @@
-import crypto from 'crypto';
+import { createHash, createHmac } from 'crypto';
 
 import { appConfig } from './config/appConfig';
 import {
-  KrakenMethod,
+  KrakenPrivateMethod,
+  KrakenPublicMethod,
   KrakenBalanceResponse,
   KrakenStakingTransactionResponse,
   KrakenTradeHistoryResponse,
   KrakenTrade,
-  KrakenLedgerResponse
+  KrakenLedgerResponse,
+  KrakenTicker,
+  KrakenTickerResponse
 } from './types/Kraken';
 
 import {
   StakingTransaction,
   Trade
 } from '../shared/types/Account';
+import { Fiat } from 'shared/constants/enums';
 
 const getKrakenSignature = (path: string, request: string, secret: string, nonce: number) => {
 
   const secret_buffer = Buffer.from(secret, 'base64');
-  const hash = crypto.createHash('sha256');
-  const hmac = crypto.createHmac('sha512', secret_buffer);
+  const hash = createHash('sha256');
+  const hmac = createHmac('sha512', secret_buffer);
   const hash_digest = hash.update(nonce + request).digest('binary');
   const hmac_digest = hmac.update(path + hash_digest, 'binary').digest('base64');
 
   return hmac_digest;
 };
 
-const invokeKrakenApi = async (method: KrakenMethod) => {
+const invokeKrakenPrivateApi = async (method: KrakenPrivateMethod) => {
 
   const baseUrl = appConfig.get('Kraken.BaseUrl');
   const apiVersion = appConfig.get('Kraken.ApiVersion');
@@ -74,12 +78,57 @@ const invokeKrakenApi = async (method: KrakenMethod) => {
   }
 }
 
+const invokeKrakenPublicApi = async (method: KrakenPublicMethod, queryString: string) => {
+  const baseUrl = appConfig.get('Kraken.BaseUrl');
+  const apiVersion = appConfig.get('Kraken.ApiVersion');
+  const endpoint = appConfig.get(`Kraken.Endpoints.${method}`);
+  const url = `${baseUrl}/${apiVersion}${endpoint}${queryString}`;
+
+  console.log(`Invoking Kraken API - '${url}'`);
+
+  try {
+    const response = await fetch(url, { method: 'GET' });
+
+    if (response.ok) {
+      const fullResponse = await response.json();
+
+      if (fullResponse?.error?.length > 0) {
+        console.error(`Kraken API error: ${JSON.stringify(fullResponse)}`);
+        throw new Error(fullResponse.error.join(', '));
+      }
+
+      return fullResponse.result;
+    }
+
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+/**
+ * Returns the ledger entries for the account.
+ * @param cryptoTicker The crypto ticker to filter by.
+ * @param fiatTicker The fiat ticker to filter by.
+ */
+export const getTickerInfo = async (cryptoTicker: KrakenTicker, fiatTicker: Fiat) => {
+  try {
+    const queryString = `?pair=${cryptoTicker}${fiatTicker}`;
+    const response: KrakenTickerResponse = await invokeKrakenPublicApi('Ticker', queryString);
+
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 /**
  * Returns the account balance.
  */
 export const getAccountBalance = async () => {
   try {
-    const response: KrakenBalanceResponse = await invokeKrakenApi('Balance');
+    const response: KrakenBalanceResponse = await invokeKrakenPrivateApi('Balance');
     return response;
   } catch (error) {
     console.error(error);
@@ -92,7 +141,7 @@ export const getAccountBalance = async () => {
  */
 export const getStakingTransactions = async () => {
   try {
-    const response: KrakenStakingTransactionResponse = await invokeKrakenApi('Staking');
+    const response: KrakenStakingTransactionResponse = await invokeKrakenPrivateApi('Staking');
 
     const stakingTransactions: StakingTransaction[] = response.map((transaction) => ({
       method: transaction.method,
@@ -119,7 +168,7 @@ export const getStakingTransactions = async () => {
 
 export const getTradeHistory = async () => {
   try {
-    const response: KrakenTradeHistoryResponse = await invokeKrakenApi('TradesHistory');
+    const response: KrakenTradeHistoryResponse = await invokeKrakenPrivateApi('TradesHistory');
     const trades: Trade[] = Object
       .values(response.trades)
       .map((trade: KrakenTrade) => ({
@@ -146,7 +195,7 @@ export const getTradeHistory = async () => {
  */
 export const getLedgerInfo = async () => {
   try {
-    const response: KrakenLedgerResponse = await invokeKrakenApi('Ledgers');
+    const response: KrakenLedgerResponse = await invokeKrakenPrivateApi('Ledgers');
 
     const ledgerInfo = Object
       .values(response.ledger)

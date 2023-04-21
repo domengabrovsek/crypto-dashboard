@@ -1,7 +1,7 @@
 import { Crypto, Fiat } from '../../shared/constants/enums';
-import { KrakenAsset } from '../types/Kraken';
+import { KrakenTicker } from '../types/Kraken';
 
-export const mapFromKrakenAsset = (asset: KrakenAsset) => {
+export const mapFromKrakenTicker = (asset: KrakenTicker) => {
   switch (asset) {
     case 'XXDG':
       return Crypto.DOGE;

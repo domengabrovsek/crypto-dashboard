@@ -67,6 +67,11 @@ export const appConfig = convict({
         doc: 'The endpoint for the ledgers.',
         format: 'String',
         default: '/private/Ledgers'
+      },
+      Ticker: {
+        doc: 'The endpoint for the ticker info.',
+        format: 'String',
+        default: '/public/Ticker'
       }
     }
   },

@@ -34,3 +34,11 @@ export const getTradeHistory = async () => {
 
   return response;
 }
+
+export const getTickerInfo = async (cryptoTicker: string, fiatTicker: string) => {
+
+  const url = `http://localhost:3000/ticker?cryptoTicker=${cryptoTicker}&fiatTicker=${fiatTicker}`;
+  const response = await get(url);
+
+  return response;
+}

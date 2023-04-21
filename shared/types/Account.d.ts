@@ -4,7 +4,7 @@ export interface AssetInfo {
   krakenTicker: string,
   balance: number,
   currentPrice: number,
-  priceEur?: number,
+  priceEur: number,
   valueUsd?: number,
   isStaking: boolean
 }

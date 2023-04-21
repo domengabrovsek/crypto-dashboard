@@ -5,13 +5,13 @@ import {
   getStakingTransactions,
   getAccountBalance,
   getTradeHistory,
-  getLedgerInfo
+  getTickerInfo
 } from '../kraken';
 
 import { getTokenInfo } from '../coingecko';
 import { Crypto } from 'shared/constants/enums';
-import { mapFromKrakenAsset } from '../lib/AssetMapper';
-import { KrakenAsset } from '../types/Kraken';
+import { mapFromKrakenTicker } from '../lib/AssetMapper';
+import { KrakenTicker } from '../types/Kraken';
 import { AccountBalance, StakingTransaction, Trade } from '../../shared/types/Account';
 import { appConfig } from '../config/appConfig';
 
@@ -20,7 +20,7 @@ const redisHost = appConfig.get('Redis.Host');
 const defaultCacheTime = appConfig.get('Redis.DefaultCacheTime');
 
 // connect to default redis instance
-const redis = new Redis({ host: redisHost, port: redisPort,  });
+const redis = new Redis({ host: redisHost, port: redisPort, });
 
 export const krakenRoutes = async (server: FastifyInstance) => {
 
@@ -41,15 +41,15 @@ export const krakenRoutes = async (server: FastifyInstance) => {
       // get the current price of each asset
       const promises = Object.keys(allAssets)
         .filter(ticker => ticker !== 'ZEUR')
-        .map(ticker => mapFromKrakenAsset(ticker as KrakenAsset))
+        .map(ticker => mapFromKrakenTicker(ticker as KrakenTicker))
         .map(asset => getTokenInfo(asset as Crypto));
 
       const tokensInfo = await Promise.all(promises);
 
       // map the current price to the asset
       response = Object.keys(allAssets).map(krakenTicker => {
-        const balance = allAssets[krakenTicker as KrakenAsset];
-        const tokenInfo = tokensInfo.find(token => token.id === mapFromKrakenAsset(krakenTicker as KrakenAsset))
+        const balance = allAssets[krakenTicker as KrakenTicker];
+        const tokenInfo = tokensInfo.find(token => token.id === mapFromKrakenTicker(krakenTicker as KrakenTicker))
 
         return {
           name: tokenInfo?.name || '',
@@ -110,8 +110,13 @@ export const krakenRoutes = async (server: FastifyInstance) => {
     reply.send(response);
   });
 
-  const response = await getLedgerInfo();
-  server.get('/ledgers', async (request, reply) => {
+  // endpoint which returns the current price of an asset
+  server.get('/ticker', async (request, reply) => {
+
+    const { cryptoTicker, fiatTicker } = request.query as any;
+
+    const response = await getTickerInfo(cryptoTicker, fiatTicker);
     reply.send(response);
   });
+
 }
