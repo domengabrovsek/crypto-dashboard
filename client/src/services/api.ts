@@ -1,4 +1,8 @@
 import { AccountBalance, StakingTransaction, Trade } from "../../../shared/types/Account";
+import { config } from '../../../shared/config/config';
+
+const port = config.port;
+const host = config.host;
 
 async function get<TResponse>(url: string): Promise<TResponse> {
   const response = await fetch(url);
@@ -8,12 +12,14 @@ async function get<TResponse>(url: string): Promise<TResponse> {
     return result;
   }
 
-  throw new Error(`Request failed: ${response.status}`);
+  const error = await response.text();
+
+  throw new Error(`Request failed: ${response.status} ${error}`,);
 }
 
 export const getAccountBalance = async () => {
 
-  const url = 'http://localhost:3000/account-balance';
+  const url = `${host}:${port}/account-balance`;
   const response = await get<AccountBalance>(url);
 
   return response;
@@ -21,7 +27,7 @@ export const getAccountBalance = async () => {
 
 export const getStakingTransactions = async () => {
 
-  const url = 'http://localhost:3000/staking';
+  const url = `${host}:${port}/staking`;
   const response = await get<StakingTransaction[]>(url);
 
   return response;
@@ -29,7 +35,7 @@ export const getStakingTransactions = async () => {
 
 export const getTradeHistory = async () => {
 
-  const url = 'http://localhost:3000/trade-history';
+  const url = `${host}:${port}/trade-history`;
   const response = await get<Trade[]>(url);
 
   return response;
@@ -37,7 +43,7 @@ export const getTradeHistory = async () => {
 
 export const getTickerInfo = async (cryptoTicker: string, fiatTicker: string) => {
 
-  const url = `http://localhost:3000/ticker?cryptoTicker=${cryptoTicker}&fiatTicker=${fiatTicker}`;
+  const url = `${host}:${port}/ticker?cryptoTicker=${cryptoTicker}&fiatTicker=${fiatTicker}`;
   const response = await get(url);
 
   return response;
