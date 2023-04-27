@@ -1,8 +1,11 @@
-import { KrakenTradesHistory } from '../types/KrakenTradesHistory';
+
 import {
   invokeKrakenPrivateApi,
   // invokeKrakenPublicApi 
 } from '../kraken';
+
+import { KrakenTradesHistory } from '../types/KrakenTradesHistory';
+import { KrakenStakingTransactions } from '../types/KrakenStaking';
 
 /**
  * Returns the ledger entries for the account.
@@ -49,33 +52,35 @@ import {
 //   }
 // }
 
-// /**
-//  * Returns the staking transactions for the account.
-//  */
-// export const getStakingTransactions = async () => {
-//   try {
-//     const response: KrakenStakingTransactionResponse = await invokeKrakenPrivateApi('Staking');
+interface StakingTransaction {
+  id: string,
+  date: string,
+  type: string,
+  asset: string,
+  amount: string,
+  status: string
+}
 
-//     writeFileSync('staking.json', JSON.stringify(response));
+export const getStakingTransactions = async () => {
+  try {
+    const response = await invokeKrakenPrivateApi<KrakenStakingTransactions>('Staking');
 
-//     const stakingTransactions: StakingTransaction[] = response.map((transaction) => ({
-//       method: transaction.method,
-//       asset: transaction.asset,
-//       amount: transaction.amount,
-//       fee: transaction.fee,
-//       date: new Date(transaction.time * 1000).toISOString(),
-//       status: transaction.status,
-//       type: transaction.type,
-//       bondStart: new Date(transaction.bond_start * 1000).toISOString(),
-//       bondEnd: new Date(transaction.bond_end * 1000).toISOString()
-//     }));
+    const stakingTransactions: StakingTransaction[] = response
+      .map((staking) => ({
+        id: staking.refid,
+        date: new Date(staking.time * 1000).toISOString(),
+        type: staking.type,
+        asset: staking.asset,
+        amount: staking.amount,
+        status: staking.status
+      }));
 
-//     return stakingTransactions;
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// };
+    return stakingTransactions;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
 interface Trade {
   orderId: string,

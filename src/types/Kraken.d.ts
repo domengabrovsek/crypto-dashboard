@@ -1,13 +1,10 @@
 import { KrakenTradesHistory } from './KrakenTradesHistory';
+import { KrakenStakingTransactions } from './KrakenStaking';
 
 export type KrakenPublicMethod = 'Ticker';
 export type KrakenPrivateMethod = 'Balance' | 'TradeBalance' | 'Staking' | 'TradesHistory' | 'Ledgers';
 
-export type KrakenStakingTransactionType = 'bonding' | 'reward' | 'unbonded';
-export type KrakenStakingTransactionStatus = 'Initial' | 'Pending' | 'Settled' | 'Success' | 'Failed';
-export type KrakenBalanceResponse = Record<KrakenTicker, number>;
-
-type KrakenResult = KrakenTradesHistory | KrakenTickerResponse;
+type KrakenResult = KrakenTradesHistory | KrakenStakingTransactions;
 
 export interface KrakenApiResponse {
   result: KrakenResult;
