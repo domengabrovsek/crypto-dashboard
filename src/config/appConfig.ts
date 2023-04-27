@@ -12,7 +12,7 @@ export const appConfig = convict({
   Port: {
     doc: 'The port to bind.',
     format: 'Number',
-    default: 3000
+    default: process.env.PORT ? parseInt(process.env.PORT) : 4000
   },
   Host: {
     doc: 'The host to bind.',
@@ -73,13 +73,6 @@ export const appConfig = convict({
         format: 'String',
         default: '/public/Ticker'
       }
-    }
-  },
-  CoinGecko: {
-    BaseUrl: {
-      doc: 'The base url for the CoinGecko API.',
-      format: 'String',
-      default: 'https://api.coingecko.com/api/v3/coins/markets'
     }
   },
   Redis: {
