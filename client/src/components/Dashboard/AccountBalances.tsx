@@ -6,13 +6,13 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
 import { getAccountBalance } from "../../services/api";
-import { AccountBalance } from "../../../../shared/types/Account";
+import { AssetInfo } from "../../../../shared/types/Account";
 import AccountBalanceSummary from './AccountBalanceSummary';
 import Title from './Title';
 
 export default function AccountBalanceTable() {
 
-  const [accountBalances, setAccountBalances] = useState<AccountBalance>([]);
+  const [accountBalances, setAccountBalances] = useState<AssetInfo[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,7 +31,7 @@ export default function AccountBalanceTable() {
     <>
 
       <AccountBalanceSummary
-        totalValue={accountBalances.reduce((acc, cur) => acc + cur.priceEur, 0)}
+        totalValue={accountBalances.reduce((acc, cur) => acc + cur.value, 0)}
         numberOfAssets={accountBalances.length}
       />
 
@@ -39,23 +39,19 @@ export default function AccountBalanceTable() {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Ticker</TableCell>
-            <TableCell>Amount</TableCell>
+            <TableCell>Asset</TableCell>
+            <TableCell>Balance</TableCell>
             <TableCell>Price</TableCell>
             <TableCell>Value [EUR]</TableCell>
-            <TableCell>Is Staking</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {accountBalances.map((row) => (
-            <TableRow key={row.krakenTicker}>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.krakenTicker} {`(${row.ticker.toUpperCase()})`}</TableCell>
+            <TableRow key={row.asset}>
+              <TableCell>{row.asset}</TableCell>
               <TableCell>{row.balance}</TableCell>
-              <TableCell>{row.currentPrice}</TableCell>
-              <TableCell>{row.priceEur}</TableCell>
-              <TableCell>{row.isStaking ? 'Yes' : 'No'}</TableCell>
+              <TableCell>{row.price}</TableCell>
+              <TableCell>{row.value}</TableCell>
             </TableRow>
           ))}
         </TableBody>

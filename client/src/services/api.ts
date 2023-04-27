@@ -1,4 +1,4 @@
-import { AccountBalance, StakingTransaction, Trade } from "../../../shared/types/Account";
+import { AssetInfo, StakingTransaction, Trade } from "../../../shared/types/Account";
 import { config } from '../../../shared/config/config';
 
 const port = config.port;
@@ -20,7 +20,7 @@ async function get<TResponse>(url: string): Promise<TResponse> {
 export const getAccountBalance = async () => {
 
   const url = `${host}:${port}/account-balance`;
-  const response = await get<AccountBalance>(url);
+  const response = await get<AssetInfo[]>(url);
 
   return response;
 }
@@ -37,14 +37,6 @@ export const getTradeHistory = async () => {
 
   const url = `${host}:${port}/trade-history`;
   const response = await get<Trade[]>(url);
-
-  return response;
-}
-
-export const getTickerInfo = async (cryptoTicker: string, fiatTicker: string) => {
-
-  const url = `${host}:${port}/ticker?cryptoTicker=${cryptoTicker}&fiatTicker=${fiatTicker}`;
-  const response = await get(url);
 
   return response;
 }

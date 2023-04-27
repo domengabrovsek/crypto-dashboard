@@ -32,31 +32,31 @@ export default function TradeHistory() {
       <Table size="small">
         <TableHead>
           <TableRow>
+            <TableCell>Order Id</TableCell>
+            <TableCell>Trade Id</TableCell>
             <TableCell>Pair</TableCell>
+            <TableCell>Time</TableCell>
             <TableCell>Type</TableCell>
-            <TableCell>Order Type</TableCell>
-            <TableCell>Date</TableCell>
+            {/* <TableCell>Order Type</TableCell> */}
             <TableCell>Price</TableCell>
+            <TableCell>Volume</TableCell>
             <TableCell>Cost</TableCell>
             <TableCell>Fee</TableCell>
-            <TableCell>Volume</TableCell>
-            <TableCell>Margin</TableCell>  
-            <TableCell>Leverage</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {tradingHistory.map((row, index) => (
             <TableRow key={index}>
+              <TableCell>{row.orderId}</TableCell>
+              <TableCell>{row.tradeId}</TableCell>
               <TableCell>{row.pair}</TableCell>
+              <TableCell>{new Date(row.time).toLocaleDateString()}</TableCell>
               <TableCell>{row.type}</TableCell>
-              <TableCell>{row.orderType}</TableCell>
-              <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
+              {/* <TableCell>{row.orderType}</TableCell> */}
               <TableCell>{row.price}</TableCell>
+              <TableCell>{row.volume}</TableCell>
               <TableCell>{row.cost}</TableCell>
               <TableCell>{row.fee}</TableCell>
-              <TableCell>{row.volume}</TableCell>
-              <TableCell>{row.margin}</TableCell>
-              <TableCell>{row.leverage}</TableCell>
             </TableRow>
           ))}
         </TableBody>
