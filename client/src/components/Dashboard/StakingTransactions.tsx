@@ -1,13 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import TableContainer from '@mui/material/TableContainer';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
 import Title from './Title';
 
 import { getStakingTransactions } from "../../services/api";
 import { StakingTransaction } from "../../../../shared/types/Account";
+
+const round = (value: number, decimals = 5) => {
+  return parseFloat(value.toFixed(decimals));
+}
 
 export default function StakingTransactions() {
 
@@ -27,9 +34,9 @@ export default function StakingTransactions() {
   }
 
   return (
-    <React.Fragment>
+    <TableContainer component={Paper}>
       <Title>Staking Transactions</Title>
-      <Table size="small">
+      <Table sx={{ minWidth: 650 }} size="small">
         <TableHead>
           <TableRow>
             <TableCell>Id</TableCell>
@@ -42,17 +49,17 @@ export default function StakingTransactions() {
         </TableHead>
         <TableBody>
           {stakingTransactions.map((row, index) => (
-            <TableRow key={index}>
+            <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell>{row.id}</TableCell>
               <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
               <TableCell>{row.asset}</TableCell>
-              <TableCell>{row.amount}</TableCell>
+              <TableCell>{round(row.amount, 5)}</TableCell>
               <TableCell>{row.status}</TableCell>
               <TableCell>{row.type}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </React.Fragment>
+    </TableContainer>
   );
 }
