@@ -12,7 +12,7 @@ export const appConfig = convict({
   Port: {
     doc: 'The port to bind.',
     format: 'Number',
-    default: 3000
+    default: process.env.PORT ? parseInt(process.env.PORT) : 4000
   },
   Host: {
     doc: 'The host to bind.',
@@ -67,14 +67,12 @@ export const appConfig = convict({
         doc: 'The endpoint for the ledgers.',
         format: 'String',
         default: '/private/Ledgers'
+      },
+      Ticker: {
+        doc: 'The endpoint for the ticker info.',
+        format: 'String',
+        default: '/public/Ticker'
       }
-    }
-  },
-  CoinGecko: {
-    BaseUrl: {
-      doc: 'The base url for the CoinGecko API.',
-      format: 'String',
-      default: 'https://api.coingecko.com/api/v3/coins/markets'
     }
   },
   Redis: {
@@ -91,7 +89,7 @@ export const appConfig = convict({
     DefaultCacheTime: {
       doc: 'The default cache time for Redis.',
       format: 'Number',
-      default: 60 * 5 // 5 minutes
+      default: 60 // 1 minute
     }
   }
 });

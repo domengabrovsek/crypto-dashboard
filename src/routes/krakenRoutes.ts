@@ -1,18 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { Redis } from 'ioredis';
 
-import {
-  getStakingTransactions,
-  getAccountBalance,
-  getTradeHistory,
-  getLedgerInfo
-} from '../kraken';
-
-import { getTokenInfo } from '../coingecko';
-import { Crypto } from 'shared/constants/enums';
-import { mapFromKrakenAsset } from '../lib/AssetMapper';
-import { KrakenAsset } from '../types/Kraken';
-import { AccountBalance, StakingTransaction, Trade } from '../../shared/types/Account';
+import { getTradesHistory, getStakingTransactions, getAccountBalance, getAssetPrices } from '../services/kraken-service';
 import { appConfig } from '../config/appConfig';
 
 const redisPort = appConfig.get('Redis.Port');
@@ -20,51 +9,26 @@ const redisHost = appConfig.get('Redis.Host');
 const defaultCacheTime = appConfig.get('Redis.DefaultCacheTime');
 
 // connect to default redis instance
-const redis = new Redis({ host: redisHost, port: redisPort,  });
+const redis = new Redis({ host: redisHost, port: redisPort, });
 
 export const krakenRoutes = async (server: FastifyInstance) => {
 
   // endpoint which returns the account balance for all assets
   server.get('/account-balance', async (request, reply) => {
 
-    let response: AccountBalance;
+    let response;
 
     const cachedResponse = await redis.get('kraken-account-balance');
 
     if (cachedResponse) {
-      console.log('using cached response');
-      response = JSON.parse(cachedResponse) as AccountBalance;
+      console.log('Used cached response - "kraken-account-balance"')
+      response = JSON.parse(cachedResponse);
     } else {
-      // list of all kraken assets and their balance
-      const allAssets = await getAccountBalance();
 
-      // get the current price of each asset
-      const promises = Object.keys(allAssets)
-        .filter(ticker => ticker !== 'ZEUR')
-        .map(ticker => mapFromKrakenAsset(ticker as KrakenAsset))
-        .map(asset => getTokenInfo(asset as Crypto));
+      const accountBalance = await getAccountBalance();
+      response = accountBalance;
 
-      const tokensInfo = await Promise.all(promises);
-
-      // map the current price to the asset
-      response = Object.keys(allAssets).map(krakenTicker => {
-        const balance = allAssets[krakenTicker as KrakenAsset];
-        const tokenInfo = tokensInfo.find(token => token.id === mapFromKrakenAsset(krakenTicker as KrakenAsset))
-
-        return {
-          name: tokenInfo?.name || '',
-          ticker: tokenInfo?.symbol || '',
-          krakenTicker: krakenTicker,
-          balance: balance,
-          currentPrice: tokenInfo?.price || 0,
-          priceEur: parseFloat(((tokenInfo?.price || 0) * balance).toFixed(5)),
-          isStaking: krakenTicker.includes('.S')
-        }
-      })
-        .filter(token => token.priceEur > 0)
-        .sort((a, b) => a.krakenTicker > b.krakenTicker ? 1 : -1);
-
-      // cache the response for 5 minutes
+      // cache the response
       await redis.set('kraken-account-balance', JSON.stringify(response), 'EX', defaultCacheTime);
     }
 
@@ -74,17 +38,19 @@ export const krakenRoutes = async (server: FastifyInstance) => {
   // endpoint which returns staking transactions
   server.get('/staking', async (request, reply) => {
 
-    let response: StakingTransaction[];
+    let response;
 
     const cachedResponse = await redis.get('kraken-staking-transactions');
 
     if (cachedResponse) {
-      console.log('using cached response');
-      response = JSON.parse(cachedResponse) as StakingTransaction[];
+      console.log('Used cached response - "kraken-staking-transactions"')
+      response = JSON.parse(cachedResponse);
     } else {
-      response = await getStakingTransactions();
 
-      // cache the response for 5 minutes
+      const stakingTransactions = await getStakingTransactions();
+      response = stakingTransactions;
+
+      // cache the response
       await redis.set('kraken-staking-transactions', JSON.stringify(response), 'EX', defaultCacheTime);
     }
 
@@ -94,24 +60,33 @@ export const krakenRoutes = async (server: FastifyInstance) => {
   // endpoint which returns trade history
   server.get('/trade-history', async (request, reply) => {
 
-    let response: Trade[];
+    let response;
+
     const cachedResponse = await redis.get('kraken-trade-history');
 
     if (cachedResponse) {
-      console.log('using cached response');
-      response = JSON.parse(cachedResponse) as Trade[];
+      console.log('Used cached response - "kraken-trade-history"');
+      response = JSON.parse(cachedResponse);
     } else {
-      response = await getTradeHistory();
+      response = await getTradesHistory();
 
-      // cache the response for 5 minutes
+      // cache the response
+      console.log('Caching response - "kraken-trade-history"');
       await redis.set('kraken-trade-history', JSON.stringify(response), 'EX', defaultCacheTime);
     }
 
     reply.send(response);
   });
 
-  const response = await getLedgerInfo();
-  server.get('/ledgers', async (request, reply) => {
+  // endpoint which syncs all ticker prices into redis
+  server.get('/sync-prices', async (request, reply) => {
+
+    const response = await getAssetPrices();
+
+    // cache the response
+    console.log('Caching response - "kraken-asset-prices"');
+    await redis.set('kraken-asset-prices', JSON.stringify(response), 'EX', defaultCacheTime);
+
     reply.send(response);
   });
 }

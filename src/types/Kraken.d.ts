@@ -1,79 +1,18 @@
-export type KrakenMethod = 'Balance' | 'TradeBalance' | 'Staking' | 'TradesHistory' | 'Ledgers'
-export type KrakenStakingTransactionType = 'bonding' | 'reward' | 'unbonded';
-export type KrakenStakingTransactionStatus = 'Initial' | 'Pending' | 'Settled' | 'Success' | 'Failed';
-export type KrakenBalanceResponse = Record<KrakenAsset, number>;
+import { KrakenTradesHistory } from './KrakenTradesHistory';
+import { KrakenStakingTransactions } from './KrakenStaking';
+import { KrakenTickerInfo } from './KrakenTicker';
+import { KrakenAccountBalance } from './KrakenAccountBalance';
 
-export interface KrakenTrade {
-  ordertxid: string,
-  postxid: string,
-  pair: string,
-  time: number,
-  type: string,
-  ordertype: string,
-  price: string,
-  cost: string,
-  fee: string,
-  vol: string,
-  margin: string,
-  leverage: string,
-  misc: string,
-  trade_id: number
+export type KrakenPublicMethod = 'Ticker';
+export type KrakenPrivateMethod = 'Balance' | 'TradeBalance' | 'Staking' | 'TradesHistory' | 'Ledgers';
+
+type KrakenResult =
+  KrakenTradesHistory |
+  KrakenStakingTransactions |
+  KrakenTickerInfo |
+  KrakenAccountBalance;
+
+export interface KrakenApiResponse {
+  result: KrakenResult;
+  error: string[];
 }
-
-export interface KrakenTradeHistoryResponse {
-  count: number,
-  trades: Record<string, KrakenTrade>
-}
-
-export type KrakenStakingTransactionResponse = KrakenStakingTransaction[];
-
-export interface KrakenStakingTransaction {
-  method: string,
-  aclass: string,
-  asset: string,
-  refid: string,
-  amount: string,
-  fee: string,
-  time: number,
-  status: KrakenStakingTransactionStatus,
-  type: KrakenStakingTransactionType,
-  bond_start: number,
-  bond_end: number
-}
-
-export interface KrakenLedger {
-  aclass: string,
-  amount: string,
-  asset: string,
-  balance: string,
-  fee: string,
-  refid: string,
-  time: number,
-  type: string
-  subtype: string
-}
-
-export interface KrakenLedgerResponse {
-  count: number,
-  ledger: Record<string, KrakenLedger>
-}
-
-export type KrakenAsset =
-  'XXBT' |
-  'XETH' |
-  'XXLM' |
-  'ADA' |
-  'ADA.S' |
-  'DOT' |
-  'DOT.S' |
-  'DOT28.S' |
-  'MATIC.S' |
-  'MATIC' |
-  'ZEUR' |
-  'XZEC' |
-  'ETHW' |
-  'XXDG' |
-  'XETC' |
-  'XETC.S' |
-  'XETC28.S'
-  ;

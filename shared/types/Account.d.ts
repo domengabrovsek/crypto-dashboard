@@ -1,15 +1,9 @@
 export interface AssetInfo {
-  name: string,
-  ticker: string,
-  krakenTicker: string,
+  asset: string,
   balance: number,
-  currentPrice: number,
-  priceEur?: number,
-  valueUsd?: number,
-  isStaking: boolean
+  price: number,
+  value: number
 }
-
-export interface AccountBalance extends Array<AssetInfo> {}
 
 export interface Balance {
   ticker: string,
@@ -17,26 +11,23 @@ export interface Balance {
 }
 
 export interface StakingTransaction {
-  method: string,
+  id: string
+  date: string,
   asset: string,
   amount: string,
-  fee: string,
-  date: string,
   status: string,
   type: string,
-  bondStart: string,
-  bondEnd: string
 }
 
 export interface Trade {
+  orderId: string,
+  tradeId: string,
   pair: string,
-  date: string,
+  time: string,
   type: string,
   orderType: string,
   price: string,
-  cost: string,
-  fee: string,
   volume: string,
-  margin: string,
-  leverage: string
+  cost: string,
+  fee: string
 }

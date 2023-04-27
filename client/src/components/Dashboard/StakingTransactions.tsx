@@ -32,10 +32,10 @@ export default function StakingTransactions() {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Asset</TableCell>
-            <TableCell>Balance</TableCell>
-            <TableCell>Fee</TableCell>
+            <TableCell>Id</TableCell>
             <TableCell>Date</TableCell>
+            <TableCell>Asset</TableCell>
+            <TableCell>Amount</TableCell>
             <TableCell>Status</TableCell>
             <TableCell>Type</TableCell>
           </TableRow>
@@ -43,9 +43,9 @@ export default function StakingTransactions() {
         <TableBody>
           {stakingTransactions.map((row, index) => (
             <TableRow key={index}>
+              <TableCell>{row.id}</TableCell>
+              <TableCell>{row.date}</TableCell>
               <TableCell>{row.asset}</TableCell>
-              <TableCell>{row.amount}</TableCell>
-              <TableCell>{row.fee}</TableCell>
               <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
               <TableCell>{row.status}</TableCell>
               <TableCell>{row.type}</TableCell>
