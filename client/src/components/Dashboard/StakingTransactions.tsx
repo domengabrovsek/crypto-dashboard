@@ -44,9 +44,9 @@ export default function StakingTransactions() {
           {stakingTransactions.map((row, index) => (
             <TableRow key={index}>
               <TableCell>{row.id}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.asset}</TableCell>
               <TableCell>{new Date(row.date).toLocaleDateString()}</TableCell>
+              <TableCell>{row.asset}</TableCell>
+              <TableCell>{row.amount}</TableCell>
               <TableCell>{row.status}</TableCell>
               <TableCell>{row.type}</TableCell>
             </TableRow>

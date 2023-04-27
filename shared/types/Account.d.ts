@@ -14,7 +14,7 @@ export interface StakingTransaction {
   id: string
   date: string,
   asset: string,
-  amount: string,
+  amount: number,
   status: string,
   type: string,
 }
@@ -26,8 +26,8 @@ export interface Trade {
   time: string,
   type: string,
   orderType: string,
-  price: string,
-  volume: string,
-  cost: string,
-  fee: string
+  price: number,
+  volume: number,
+  cost: number,
+  fee: number
 }

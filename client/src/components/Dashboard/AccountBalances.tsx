@@ -10,6 +10,10 @@ import { AssetInfo } from "../../../../shared/types/Account";
 import AccountBalanceSummary from './AccountBalanceSummary';
 import Title from './Title';
 
+const round = (value: number, decimals = 5) => {
+  return parseFloat(value.toFixed(decimals));
+}
+
 export default function AccountBalanceTable() {
 
   const [accountBalances, setAccountBalances] = useState<AssetInfo[]>([]);
@@ -31,29 +35,34 @@ export default function AccountBalanceTable() {
     <>
 
       <AccountBalanceSummary
-        totalValue={accountBalances.reduce((acc, cur) => acc + cur.value, 0)}
-        numberOfAssets={accountBalances.length}
+        totalValue={round(accountBalances.reduce((acc, cur) => acc + cur.value, 0), 2)}
+        numberOfAssets={accountBalances.filter((row) => row.value > 1).length}
       />
 
       <Title>Account Balance</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Asset</TableCell>
-            <TableCell>Balance</TableCell>
-            <TableCell>Price</TableCell>
-            <TableCell>Value [EUR]</TableCell>
+            <TableCell align="right">Asset</TableCell>
+            <TableCell align="right">Balance</TableCell>
+            <TableCell align="right">Price</TableCell>
+            <TableCell align="right">Value [EUR]</TableCell>
+            <TableCell align="right">Is Staking</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {accountBalances.map((row) => (
-            <TableRow key={row.asset}>
-              <TableCell>{row.asset}</TableCell>
-              <TableCell>{row.balance}</TableCell>
-              <TableCell>{row.price}</TableCell>
-              <TableCell>{row.value}</TableCell>
-            </TableRow>
-          ))}
+          {accountBalances
+            .filter((row) => row.value > 1)
+            .sort((a, b) => b.value - a.value)
+            .map((row) => (
+              <TableRow key={row.asset}>
+                <TableCell align="right">{row.asset}</TableCell>
+                <TableCell align="right">{round(row.balance)}</TableCell>
+                <TableCell align="right">{round(row.price)}</TableCell>
+                <TableCell align="right">{round(row.value)}</TableCell>
+                <TableCell align="right">{row.asset.includes('.S') ? "Yes" : "No"}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </>
