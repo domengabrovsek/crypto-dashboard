@@ -89,7 +89,7 @@ export const appConfig = convict({
     DefaultCacheTime: {
       doc: 'The default cache time for Redis.',
       format: 'Number',
-      default: 60 * 5 // 5 minutes
+      default: 60 // 1 minute
     }
   }
 });
