@@ -51,14 +51,14 @@ export const invokeKrakenPrivateApi = async<T extends KrakenResult>(method: Krak
   }
 }
 
-export const invokeKrakenPublicApi = async (method: KrakenPublicMethod, queryString: string) => {
+export const invokeKrakenPublicApi = async<T extends KrakenResult>(method: KrakenPublicMethod, queryString = ''): Promise<T> => {
 
   const endpoint = appConfig.get(`Kraken.Endpoints.${method}`);
   const url = `${baseUrl}/${apiVersion}${endpoint}${queryString}`;
 
   try {
     const response = await get<KrakenApiResponse>(url);
-    return response.data.result;
+    return response.data.result as T;
   } catch (error) {
     console.error(error);
     throw error;
