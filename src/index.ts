@@ -4,11 +4,12 @@ import helmet from '@fastify/helmet';
 
 import { appConfig } from './config/appConfig';
 import { krakenRoutes } from './routes/krakenRoutes';
-import { cryptoRoutes } from './routes/cryptoRoutes';
 
 // setup logger
 const envToLogger = {
   development: {
+    // trace	debug	info	warn	error	fatal	silent
+    level: 'error',
     transport: {
       target: 'pino-pretty',
       options: {
@@ -30,7 +31,6 @@ server.register(helmet);
 
 // register routes
 server.register(krakenRoutes);
-server.register(cryptoRoutes);
 
 // run server
 server.listen({
