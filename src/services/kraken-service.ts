@@ -95,7 +95,7 @@ interface StakingTransaction {
   date: string,
   type: string,
   asset: string,
-  amount: string,
+  amount: number,
   status: string
 }
 
@@ -109,7 +109,7 @@ export const getStakingTransactions = async () => {
         date: new Date(staking.time * 1000).toISOString(),
         type: staking.type,
         asset: staking.asset,
-        amount: staking.amount,
+        amount: Number(staking.amount),
         status: staking.status
       }));
 
@@ -127,10 +127,10 @@ interface Trade {
   time: string,
   type: string,
   orderType: string,
-  price: string,
-  volume: string,
-  cost: string,
-  fee: string
+  price: number,
+  volume: number,
+  cost: number,
+  fee: number
 }
 
 export const getTradesHistory = async () => {
@@ -146,10 +146,10 @@ export const getTradesHistory = async () => {
         time: new Date(trade.time * 1000).toISOString(),
         type: trade.type,
         orderType: trade.ordertype,
-        price: trade.price,
-        volume: trade.vol,
-        cost: trade.cost,
-        fee: trade.fee
+        price: Number(trade.price),
+        volume: Number(trade.vol),
+        cost: Number(trade.cost),
+        fee: Number(trade.fee)
       }));
 
     return trades;
