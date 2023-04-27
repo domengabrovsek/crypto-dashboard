@@ -1,7 +1,7 @@
 import { createHash, createHmac } from 'crypto';
 
 import { appConfig } from './config/appConfig';
-import { KrakenPrivateMethod, KrakenPublicMethod, KrakenApiResponse } from './types/Kraken';
+import { KrakenPrivateMethod, KrakenPublicMethod, KrakenApiResponse, KrakenResult } from './types/Kraken';
 import { post, get } from '../shared/lib/http-client';
 
 const baseUrl = appConfig.get('Kraken.BaseUrl');
@@ -18,7 +18,7 @@ const getKrakenSignature = (path: string, request: string, secret: string, nonce
   return hmac_digest;
 };
 
-export const invokeKrakenPrivateApi = async (method: KrakenPrivateMethod) => {
+export const invokeKrakenPrivateApi = async<T extends KrakenResult>(method: KrakenPrivateMethod): Promise<T> => {
 
   const apiKey = appConfig.get('Kraken.ApiKey');
   const privateKey = appConfig.get('Kraken.PrivateKey');
@@ -43,7 +43,7 @@ export const invokeKrakenPrivateApi = async (method: KrakenPrivateMethod) => {
     }
     const response = await post<KrakenApiResponse>(url, body, options);
 
-    return response.data.result;
+    return response.data.result as T;
 
   } catch (error) {
     console.error(error);

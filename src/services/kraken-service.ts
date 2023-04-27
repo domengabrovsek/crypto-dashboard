@@ -1,3 +1,4 @@
+import { KrakenTradesHistory } from '../types/KrakenTradesHistory';
 import {
   invokeKrakenPrivateApi,
   // invokeKrakenPublicApi 
@@ -76,15 +77,39 @@ import {
 //   }
 // };
 
-// /**
-//  * Returns the trade history for the account.
-//  */
+interface Trade {
+  orderId: string,
+  tradeId: string,
+  pair: string,
+  time: string,
+  type: string,
+  orderType: string,
+  price: string,
+  volume: string,
+  cost: string,
+  fee: string
+}
 
 export const getTradesHistory = async () => {
   try {
-    const response = await invokeKrakenPrivateApi('TradesHistory');
+    const response = await invokeKrakenPrivateApi<KrakenTradesHistory>('TradesHistory');
 
-    return response;
+    const trades: Trade[] = Object
+      .values(response.trades)
+      .map((trade) => ({
+        orderId: trade.ordertxid,
+        tradeId: trade.postxid,
+        pair: trade.pair,
+        time: new Date(trade.time * 1000).toISOString(),
+        type: trade.type,
+        orderType: trade.ordertype,
+        price: trade.price,
+        volume: trade.vol,
+        cost: trade.cost,
+        fee: trade.fee
+      }));
+
+    return trades;
   } catch (error) {
     console.error(error);
     throw error;
