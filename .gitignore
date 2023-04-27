@@ -1,4 +1,14 @@
+# dependencies
 node_modules
+
+# local env variables
 .env
+
+# build output
 dist
+
+# macos files
 .DS_Store
+
+# misc files used for testing which should not be committed
+local
