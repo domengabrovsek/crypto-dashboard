@@ -1,56 +1,94 @@
-
-import {
-  invokeKrakenPrivateApi,
-  // invokeKrakenPublicApi 
-} from '../kraken';
-
+import { invokeKrakenPrivateApi, invokeKrakenPublicApi } from '../kraken';
 import { KrakenTradesHistory } from '../types/KrakenTradesHistory';
 import { KrakenStakingTransactions } from '../types/KrakenStaking';
+import { KrakenTickerInfo } from '../types/KrakenTicker';
+import { KrakenAccountBalance } from '../types/KrakenAccountBalance';
 
-/**
- * Returns the ledger entries for the account.
- * @param cryptoTicker The crypto ticker to filter by.
- * @param fiatTicker The fiat ticker to filter by.
- */
-// export const getTickerInfo = async (cryptoTicker: KrakenTicker, fiatTicker: Fiat) => {
+interface AssetPrices {
+  [price: string]: number
+}
 
-//   interface Response {
-//     ticker: string,
-//     price: number
-//   }
+export const getAssetPrices = async () => {
 
-//   try {
-//     const pair = `${cryptoTicker}${fiatTicker}`;
-//     const queryString = `?pair=${pair}`;
-//     const result: Record<string, Record<string, string[] | string>> = await invokeKrakenPublicApi('Ticker', queryString);
+  try {
+    const response = await invokeKrakenPublicApi<KrakenTickerInfo>('Ticker');
 
-//     const response: Response = {
-//       ticker: cryptoTicker,
-//       price: parseFloat(result?.[pair]?.a?.[0])
-//     }
+    const assetPrices: AssetPrices = {};
 
-//     return response;
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// }
+    for (const [key, value] of Object.entries(response)) {
 
-// /**
-//  * Returns the account balance.
-//  */
-// export const getAccountBalance = async () => {
-//   try {
-//     const response: KrakenBalanceResponse = await invokeKrakenPrivateApi('Balance');
+      // take only EUR prices
+      if (key.includes('EUR')) {
 
-//     writeFileSync('balance.json', JSON.stringify(response));
+        let asset = key;
 
-//     return response;
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// }
+        // replace all XX with X
+        if (asset.includes('XX')) {
+          asset = asset.replace('XX', 'X');
+        }
+
+        // replace all ZEUR with EUR
+        if (asset.includes('ZEUR')) {
+          asset = asset.replace('ZEUR', 'EUR');
+        }
+
+        // set price
+        assetPrices[asset] = Number(value.a[0]);
+
+        // hack for staking assets
+        // DOT DOT.S DOT28.S
+        const [crypto] = asset.split('EUR');
+        assetPrices[`${crypto}28.SEUR`] = Number(value.a[0]);
+        assetPrices[`${crypto}.SEUR`] = Number(value.a[0]);
+
+        // hack for base currency
+        assetPrices['EUREUR'] = 1;
+      }
+    }
+
+    return assetPrices;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+interface AssetInfo {
+  asset: string,
+  balance: number,
+  price: number,
+  value: number
+}
+
+export const getAccountBalance = async () => {
+  try {
+    const response = await invokeKrakenPrivateApi<KrakenAccountBalance>('Balance');
+
+    // get prices in base currency from cache
+    const assetPrices = await getAssetPrices();
+
+    const accountBalance: AssetInfo[] = Object.entries(response)
+      .filter(([, balance]) => Number(balance) > 0)
+      .map(([asset, balance]) => {
+
+        const normalizedAsset = asset.replace('XX', 'X').replace('ZEUR', 'EUR');
+        const normalizedBalance = Number(balance);
+        const price = assetPrices[`${normalizedAsset}EUR`];
+
+        return {
+          asset: normalizedAsset,
+          balance: normalizedBalance,
+          price: price,
+          value: normalizedBalance * price
+        }
+      });
+
+    return accountBalance;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
 
 interface StakingTransaction {
   id: string,
@@ -120,29 +158,3 @@ export const getTradesHistory = async () => {
     throw error;
   }
 };
-
-// /**
-//  * Returns the ledger info for the account.
-//  */
-// export const getLedgerInfo = async () => {
-//   try {
-//     const response: KrakenLedgerResponse = await invokeKrakenPrivateApi('Ledgers');
-
-//     const ledgerInfo = Object
-//       .values(response.ledger)
-//       .map((ledger) => ({
-//         refId: ledger.refid,
-//         time: new Date(ledger.time * 1000).toISOString(),
-//         type: ledger.type,
-//         asset: ledger.asset,
-//         amount: ledger.amount,
-//         fee: ledger.fee,
-//         balance: ledger.balance
-//       }));
-
-//     return ledgerInfo;
-//   } catch (error) {
-//     console.error(error);
-//     throw error;
-//   }
-// }
