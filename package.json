@@ -18,7 +18,7 @@
     "@fastify/caching": "^8.3.0",
     "@fastify/cors": "^8.3.0",
     "@fastify/helmet": "^10.1.1",
-    "bootstrap": "^5.2.3",
+    "bootstrap": "^5.3.0",
     "convict": "^6.2.4",
     "fastify": "^4.17.0",
     "ioredis": "^5.3.2"
