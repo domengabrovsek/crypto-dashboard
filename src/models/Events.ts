@@ -30,8 +30,8 @@ export interface LedgerEvent extends Event {
     accountId: string;
     exchange: Exchange;
     asset: string;
-    amount: number;
-    balance: number;
+    amount: string;
+    balance: string;
     refid: string;
   }
 }
