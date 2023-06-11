@@ -3,6 +3,7 @@ import { KrakenTradesHistory } from '../types/KrakenTradesHistory';
 import { KrakenStakingTransactions } from '../types/KrakenStaking';
 import { KrakenTickerInfo } from '../types/KrakenTicker';
 import { KrakenAccountBalance } from '../types/KrakenAccountBalance';
+import { KrakenLedger } from '../types/KrakenLedger';
 
 interface AssetPrices {
   [price: string]: number
@@ -158,3 +159,14 @@ export const getTradesHistory = async () => {
     throw error;
   }
 };
+
+export const getLedgerInfo = async (params?: { [key: string]: any }) => {
+  try {
+    const response = await invokeKrakenPrivateApi<KrakenLedger>('Ledgers', params);
+
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

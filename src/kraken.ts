@@ -3,6 +3,7 @@ import { createHash, createHmac } from 'crypto';
 import { appConfig } from './config/appConfig';
 import { KrakenPrivateMethod, KrakenPublicMethod, KrakenApiResponse, KrakenResult } from './types/Kraken';
 import { post, get } from '../shared/lib/http-client';
+import { toQueryString } from './lib/utils';
 
 const baseUrl = appConfig.get('Kraken.BaseUrl');
 const apiVersion = appConfig.get('Kraken.ApiVersion');
@@ -18,7 +19,10 @@ const getKrakenSignature = (path: string, request: string, secret: string, nonce
   return hmac_digest;
 };
 
-export const invokeKrakenPrivateApi = async<T extends KrakenResult>(method: KrakenPrivateMethod): Promise<T> => {
+export const invokeKrakenPrivateApi = async<T extends KrakenResult>(
+  method: KrakenPrivateMethod,
+  params: { [key: string]: any } = {} 
+): Promise<T> => {
 
   const apiKey = appConfig.get('Kraken.ApiKey');
   const privateKey = appConfig.get('Kraken.PrivateKey');
@@ -29,7 +33,9 @@ export const invokeKrakenPrivateApi = async<T extends KrakenResult>(method: Krak
 
   // unique number which has to increase with each API call
   const nonce = Date.now() * 1000;
-  const body = `nonce=${nonce}`;
+  params.nonce = nonce;
+
+  const body = toQueryString(params); 
 
   const signature = getKrakenSignature(path, body, privateKey, nonce);
 
@@ -50,6 +56,7 @@ export const invokeKrakenPrivateApi = async<T extends KrakenResult>(method: Krak
     throw error;
   }
 }
+
 
 export const invokeKrakenPublicApi = async<T extends KrakenResult>(method: KrakenPublicMethod, queryString = ''): Promise<T> => {
 

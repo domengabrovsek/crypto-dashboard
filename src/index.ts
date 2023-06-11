@@ -6,6 +6,10 @@ import { Redis } from 'ioredis';
 import { appConfig } from './config/appConfig';
 import { krakenRoutes } from './routes/krakenRoutes';
 
+// load environment variables
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 // setup logger
 const envToLogger = {
   development: {
