@@ -91,50 +91,53 @@ export const krakenRoutes = async (server: FastifyInstance) => {
     reply.send(response);
   });
 
-  // sync kraken trading data to dynamodb
+  // Endpoint to synchronize trading data from Kraken to DynamoDB
   server.get('/sync/kraken', async (request, reply) => {
 
-    let ofs = 0;
-    let completeLedger: { [key: string]: any } = {};
+    let ofs = 0; // Offset for Kraken API ledger data request
+    let completeLedger: { [key: string]: any } = {}; // Stores all the ledger entries from Kraken API
 
     while (true) {
-      const params = { ofs };
-      const ledgerData = await getLedgerInfo(params);
+      const params = { ofs }; // Parameters for Kraken API
+      const ledgerData = await getLedgerInfo(params); // Fetch ledger data from Kraken
 
-      // If we have received all ledger entries, break the loop
+      // If there's no ledger data left to fetch from Kraken, break the loop
       if (!ledgerData || Object.keys(ledgerData?.ledger).length === 0) {
         console.log('No more ledger entries');
         break;
       }
 
-      // Combine received ledgers
+      // Merge the newly fetched ledger entries with the previously fetched entries
       completeLedger = { ...completeLedger, ...ledgerData.ledger };
 
-      // Set the offset to the next page
+      // Increment the offset to fetch the next page of ledger entries
       ofs = Object.keys(ledgerData.ledger).length + ofs;
     }
 
+    // Prepare the result, which includes the complete ledger and the total count of ledger entries
     const result = {
       ledger: completeLedger,
       count: Object.keys(completeLedger).length,
     };
 
-    // Convert the ledger object into an array
+    // Transform the ledger entries from an object to an array and normalize the data
     const response = Object
       .values(result.ledger)
       .map((trade: any) => ({
-        amount: trade.amount,
-        asset: trade.asset,
-        balance: trade.balance,
-        fee: trade.fee,
-        refid: trade.refid,
-        time: new Date(parseInt(trade.time) * 1000).toISOString(),
-        type: trade.type,
+        amount: trade.amount, // Amount of the asset being traded
+        asset: trade.asset, // The asset being traded
+        balance: trade.balance, // Balance after the trade
+        fee: trade.fee, // Fee paid for the trade
+        refid: trade.refid, // Unique reference ID for the trade
+        time: new Date(parseInt(trade.time) * 1000).toISOString(), // Time of the trade
+        type: trade.type, // Type of the trade (buy/sell)
       }));
 
-    // Save the data to dynamodb
+    // Save the normalized ledger entries to DynamoDB using the event handler
     await Promise.all(response.map(trade => createEventHandler(trade)));
 
+    // Send the ledger entries back in the response
     reply.send(response);
   });
+
 }
