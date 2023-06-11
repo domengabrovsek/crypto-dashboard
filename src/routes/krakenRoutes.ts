@@ -1,8 +1,9 @@
 import { FastifyInstance } from 'fastify';
 import { Redis } from 'ioredis';
 
-import { getTradesHistory, getStakingTransactions, getAccountBalance, getAssetPrices } from '../services/kraken-service';
+import { getTradesHistory, getStakingTransactions, getAccountBalance, getAssetPrices, getLedgerInfo } from '../services/kraken-service';
 import { appConfig } from '../config/appConfig';
+import { createEventHandler } from '../db/db';
 
 const redisPort = appConfig.get('Redis.Port');
 const redisHost = appConfig.get('Redis.Host');
@@ -86,6 +87,53 @@ export const krakenRoutes = async (server: FastifyInstance) => {
     // cache the response
     console.log('Caching response - "kraken-asset-prices"');
     await redis.set('kraken-asset-prices', JSON.stringify(response), 'EX', defaultCacheTime);
+
+    reply.send(response);
+  });
+
+  // sync kraken trading data to dynamodb
+  server.get('/sync/kraken', async (request, reply) => {
+
+    let ofs = 0;
+    let completeLedger: { [key: string]: any } = {};
+
+    while (true) {
+      const params = { ofs };
+      const ledgerData = await getLedgerInfo(params);
+
+      // If we have received all ledger entries, break the loop
+      if (!ledgerData || Object.keys(ledgerData?.ledger).length === 0) {
+        console.log('No more ledger entries');
+        break;
+      }
+
+      // Combine received ledgers
+      completeLedger = { ...completeLedger, ...ledgerData.ledger };
+
+      // Set the offset to the next page
+      ofs = Object.keys(ledgerData.ledger).length + ofs;
+    }
+
+    const result = {
+      ledger: completeLedger,
+      count: Object.keys(completeLedger).length,
+    };
+
+    // Convert the ledger object into an array
+    const response = Object
+      .values(result.ledger)
+      .map((trade: any) => ({
+        amount: trade.amount,
+        asset: trade.asset,
+        balance: trade.balance,
+        fee: trade.fee,
+        refid: trade.refid,
+        time: new Date(parseInt(trade.time) * 1000).toISOString(),
+        type: trade.type,
+      }));
+
+    // Save the data to dynamodb
+    await Promise.all(response.map(trade => createEventHandler(trade)));
 
     reply.send(response);
   });
