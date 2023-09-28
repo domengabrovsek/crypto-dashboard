@@ -40,3 +40,11 @@ export const getTradeHistory = async () => {
 
   return response;
 }
+
+export const getStakingRewards = async () => {
+
+  const url = `${host}:${port}/account/staking/rewards`;
+  const response = await get<StakingTransaction[]>(url);
+
+  return response;
+}

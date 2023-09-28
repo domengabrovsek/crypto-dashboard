@@ -58,6 +58,31 @@ export const krakenRoutes = async (server: FastifyInstance) => {
     reply.send(response);
   });
 
+  // endpoint which returns all staking rewards
+  server.get('/account/staking/rewards', async (request, reply) => {
+    let response;
+
+    const cachedResponse = await redis.get('kraken-staking-rewards');
+
+    if (cachedResponse) {
+      console.log('Used cached response - "kraken-staking-rewards"')
+      response = JSON.parse(cachedResponse);
+    } else {
+
+      const stakingTransactions = await getStakingTransactions();
+      const stakingRewards = stakingTransactions
+        .filter(transaction => transaction.type === 'reward')
+        .filter(transaction => transaction.asset === 'DOT28.S');
+
+      response = stakingRewards;
+
+      // cache the response
+      await redis.set('kraken-staking-rewards', JSON.stringify(response), 'EX', defaultCacheTime);
+    }
+
+    reply.send(response);
+  })
+
   // endpoint which returns trade history
   server.get('/trade-history', async (request, reply) => {
 
@@ -139,5 +164,4 @@ export const krakenRoutes = async (server: FastifyInstance) => {
     // Send the ledger entries back in the response
     reply.send(response);
   });
-
 }
