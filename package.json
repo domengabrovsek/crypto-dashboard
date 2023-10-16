@@ -23,7 +23,7 @@
     "@fastify/helmet": "^11.0.0",
     "bootstrap": "^5.3.0",
     "convict": "^6.2.4",
-    "fastify": "^4.23.2",
+    "fastify": "^4.24.2",
     "ioredis": "^5.3.2"
   },
   "devDependencies": {
