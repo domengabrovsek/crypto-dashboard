@@ -1,7 +1,5 @@
 name: Build Docker image for Raspberry Pi
 
-runs-on: self-hosted
-
 on:
   push:
     branches:
@@ -27,6 +25,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Build and push
+        runs-on: self-hosted
         uses: docker/build-push-action@v2
         with:
           context: .
