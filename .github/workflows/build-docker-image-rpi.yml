@@ -1,5 +1,7 @@
 name: Build Docker image for Raspberry Pi
 
+runs-on: self-hosted
+
 on:
   push:
     branches:
