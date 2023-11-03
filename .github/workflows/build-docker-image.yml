@@ -9,7 +9,7 @@ jobs:
 
   # Build and push Docker image for x86_64 architecture
   build-default-image:
-  name: Build and push Docker image
+    name: Build and push Docker image
     runs-on: ubuntu-latest
     steps:
     - name: Check out the repo
