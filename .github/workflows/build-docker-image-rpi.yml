@@ -1,35 +1,28 @@
-name: Build Docker image for Raspberry Pi
+name: Build and Push Docker Image for RPi
 
 on:
   push:
     branches:
-      - master
+      - master 
 
 jobs:
-  build:
-    runs-on: self-hosted
+  build-and-push:
+    name: Build and push Docker image on Raspberry Pi
+    runs-on: self-hosted 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: domengabrovsek
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          password: ${{ secrets.DOCKER_HUB_ACCES_TOKEN }} 
 
-      - name: Build and push
+      - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
           push: true
           tags: domengabrovsek/crypto-dashboard-server:rpi-latest
-          platforms: linux/amd64,linux/arm/v7
-
