@@ -26,7 +26,7 @@ const envToLogger = {
   },
   production: true,
   test: false
-}
+};
 
 // setup server
 const server = fastify({ logger: envToLogger['development'] });

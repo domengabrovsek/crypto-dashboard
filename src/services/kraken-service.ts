@@ -52,7 +52,7 @@ export const getAssetPrices = async () => {
     console.error(error);
     throw error;
   }
-}
+};
 
 interface AssetInfo {
   asset: string,
@@ -81,7 +81,7 @@ export const getAccountBalance = async () => {
           balance: normalizedBalance,
           price: price,
           value: normalizedBalance * price
-        }
+        };
       });
 
     return accountBalance;
@@ -89,7 +89,7 @@ export const getAccountBalance = async () => {
     console.error(error);
     throw error;
   }
-}
+};
 
 interface StakingTransaction {
   id: string,
@@ -162,11 +162,9 @@ export const getTradesHistory = async () => {
 
 export const getLedgerInfo = async (params?: { [key: string]: any }) => {
   try {
-    const response = await invokeKrakenPrivateApi<KrakenLedger>('Ledgers', params);
-
-    return response;
+    return await invokeKrakenPrivateApi<KrakenLedger>('Ledgers', params);
   } catch (error) {
     console.error(error);
     throw error;
   }
-}
+};

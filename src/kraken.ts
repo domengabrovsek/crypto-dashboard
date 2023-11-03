@@ -14,9 +14,7 @@ const getKrakenSignature = (path: string, request: string, secret: string, nonce
   const hash = createHash('sha256');
   const hmac = createHmac('sha512', secret_buffer);
   const hash_digest = hash.update(nonce + request).digest('binary');
-  const hmac_digest = hmac.update(path + hash_digest, 'binary').digest('base64');
-
-  return hmac_digest;
+  return hmac.update(path + hash_digest, 'binary').digest('base64');
 };
 
 export const invokeKrakenPrivateApi = async<T extends KrakenResult>(
@@ -46,7 +44,7 @@ export const invokeKrakenPrivateApi = async<T extends KrakenResult>(
         'API-Key': apiKey,
         'API-Sign': signature
       }
-    }
+    };
     const response = await post<KrakenApiResponse>(url, body, options);
 
     return response.data.result as T;
@@ -55,7 +53,7 @@ export const invokeKrakenPrivateApi = async<T extends KrakenResult>(
     console.error(error);
     throw error;
   }
-}
+};
 
 
 export const invokeKrakenPublicApi = async<T extends KrakenResult>(method: KrakenPublicMethod, queryString = ''): Promise<T> => {
@@ -70,4 +68,4 @@ export const invokeKrakenPublicApi = async<T extends KrakenResult>(method: Krake
     console.error(error);
     throw error;
   }
-}
+};

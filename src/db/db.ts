@@ -6,7 +6,7 @@ import {
 
 import { EventType, Exchange, LedgerEvent } from '../models/Events';
 import { marshall } from '@aws-sdk/util-dynamodb';
-import { toSHA256 } from '../lib/utils'
+import { toSHA256 } from '../lib/utils';
 
 const dynamoClient = new DynamoDBClient({ region: 'eu-central-1' });
 const tableName = 'crypto-dashboard-events';
@@ -77,14 +77,14 @@ export const createEventHandler = async (ledger: any) => {
     amount: ledger.amount,
     balance: ledger.balance,
     refid: ledger.refid
-  }
+  };
 
   const event: LedgerEvent = {
     eventId: toSHA256(payload),
     eventType: eventType,
     timestamp: ledger.time,
     payload: payload
-  }
+  };
 
   // prepare the keys for the event
   const pk = `EVENT#${event.eventId}`;

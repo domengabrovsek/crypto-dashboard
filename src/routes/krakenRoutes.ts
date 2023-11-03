@@ -22,7 +22,7 @@ export const krakenRoutes = async (server: FastifyInstance) => {
     const cachedResponse = await redis.get('kraken-account-balance');
 
     if (cachedResponse) {
-      console.log('Used cached response - "kraken-account-balance"')
+      console.log('Used cached response - "kraken-account-balance"');
       response = JSON.parse(cachedResponse);
     } else {
 
@@ -44,7 +44,7 @@ export const krakenRoutes = async (server: FastifyInstance) => {
     const cachedResponse = await redis.get('kraken-staking-transactions');
 
     if (cachedResponse) {
-      console.log('Used cached response - "kraken-staking-transactions"')
+      console.log('Used cached response - "kraken-staking-transactions"');
       response = JSON.parse(cachedResponse);
     } else {
 
@@ -65,7 +65,7 @@ export const krakenRoutes = async (server: FastifyInstance) => {
     const cachedResponse = await redis.get('kraken-staking-rewards');
 
     if (cachedResponse) {
-      console.log('Used cached response - "kraken-staking-rewards"')
+      console.log('Used cached response - "kraken-staking-rewards"');
       response = JSON.parse(cachedResponse);
     } else {
 
@@ -81,7 +81,7 @@ export const krakenRoutes = async (server: FastifyInstance) => {
     }
 
     reply.send(response);
-  })
+  });
 
   // endpoint which returns trade history
   server.get('/trade-history', async (request, reply) => {
@@ -164,4 +164,4 @@ export const krakenRoutes = async (server: FastifyInstance) => {
     // Send the ledger entries back in the response
     reply.send(response);
   });
-}
+};
