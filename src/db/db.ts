@@ -12,8 +12,6 @@ const dynamoClient = new DynamoDBClient({ region: 'eu-central-1' });
 const tableName = 'crypto-dashboard-events';
 
 export const createEventHandler = async (ledger: any) => {
-  const accountId = '1';
-
   let eventType: EventType;
 
   switch (ledger.type) {
@@ -71,7 +69,6 @@ export const createEventHandler = async (ledger: any) => {
   }
 
   const payload = {
-    accountId: accountId,
     exchange: Exchange.Kraken,
     asset: ledger.asset,
     amount: ledger.amount,
@@ -87,9 +84,9 @@ export const createEventHandler = async (ledger: any) => {
   }
 
   // prepare the keys for the event
-  const pk = `EVENT#${event.eventId}`;
-  const sk = `EVENT#${event.timestamp}`;
-  const gsi = `ACCOUNT#${accountId}`;
+  const pk = `EVENT_TYPE#${event.eventType}`;
+  const sk = `EXCHANGE#${event.payload.exchange}#TIMESTAMP#${event.timestamp}`;
+  const gsi = `TIMESTAMP#${event.timestamp}`;
 
   // store the event in the event store
   const params: PutItemCommandInput = {
@@ -101,18 +98,18 @@ export const createEventHandler = async (ledger: any) => {
 
   try {
 
-    console.log(`Creating ${eventType} event for account "${accountId}"}`);
+    console.log(`Creating ${eventType} event`);
 
     await dynamoClient.send(new PutItemCommand(params));
 
-    console.log(`Successfully created ${eventType} event for account "${accountId}"`);
+    console.log(`Successfully created ${eventType} event for account`);
 
   } catch (error: any) {
-    
-    if(error.name === 'ConditionalCheckFailedException') {
+
+    if (error.name === 'ConditionalCheckFailedException') {
       console.warn(`Event ${event.eventId} already exists`);
       return;
-    } 
+    }
 
     console.error(error);
     throw error;

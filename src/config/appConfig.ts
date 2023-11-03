@@ -19,7 +19,11 @@ export const appConfig = convict({
     format: 'String',
     default: '0.0.0.0'
   },
-
+  DatabaseTable: {
+    doc: 'The name of the database table.',
+    format: 'String',
+    default: 'crypto-dashboard-events'
+  },
   // https://docs.kraken.com/rest/
   Kraken: {
     ApiKey: {

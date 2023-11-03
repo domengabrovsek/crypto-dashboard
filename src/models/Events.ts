@@ -27,7 +27,6 @@ interface Event {
 
 export interface LedgerEvent extends Event {
   payload: {
-    accountId: string;
     exchange: Exchange;
     asset: string;
     amount: string;

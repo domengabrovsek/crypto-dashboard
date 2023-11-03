@@ -19,7 +19,7 @@ async function get<TResponse>(url: string): Promise<TResponse> {
 
 export const getAccountBalance = async () => {
 
-  const url = `${host}:${port}/account-balance`;
+  const url = `${host}:${port}/account/balance`;
   const response = await get<AssetInfo[]>(url);
 
   return response;
@@ -27,7 +27,7 @@ export const getAccountBalance = async () => {
 
 export const getStakingTransactions = async () => {
 
-  const url = `${host}:${port}/staking`;
+  const url = `${host}:${port}/account/staking/transactions`;
   const response = await get<StakingTransaction[]>(url);
 
   return response;
@@ -35,7 +35,7 @@ export const getStakingTransactions = async () => {
 
 export const getTradeHistory = async () => {
 
-  const url = `${host}:${port}/trade-history`;
+  const url = `${host}:${port}/account/trade-history`;
   const response = await get<Trade[]>(url);
 
   return response;

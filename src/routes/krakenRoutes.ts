@@ -4,6 +4,7 @@ import { Redis } from 'ioredis';
 import { getTradesHistory, getStakingTransactions, getAccountBalance, getAssetPrices, getLedgerInfo } from '../services/kraken-service';
 import { appConfig } from '../config/appConfig';
 import { createEventHandler } from '../db/db';
+import { fetchStakingTransactions } from '../stores/account-store';
 
 const redisPort = appConfig.get('Redis.Port');
 const redisHost = appConfig.get('Redis.Host');
@@ -15,7 +16,7 @@ const redis = new Redis({ host: redisHost, port: redisPort, });
 export const krakenRoutes = async (server: FastifyInstance) => {
 
   // endpoint which returns the account balance for all assets
-  server.get('/account-balance', async (request, reply) => {
+  server.get('/account/balance', async (request, reply) => {
 
     let response;
 
@@ -37,7 +38,7 @@ export const krakenRoutes = async (server: FastifyInstance) => {
   });
 
   // endpoint which returns staking transactions
-  server.get('/staking', async (request, reply) => {
+  server.get('/account/staking/transactions', async (request, reply) => {
 
     let response;
 
@@ -60,31 +61,15 @@ export const krakenRoutes = async (server: FastifyInstance) => {
 
   // endpoint which returns all staking rewards
   server.get('/account/staking/rewards', async (request, reply) => {
-    let response;
 
-    const cachedResponse = await redis.get('kraken-staking-rewards');
+    console.log('Querying staking events for Kraken')
 
-    if (cachedResponse) {
-      console.log('Used cached response - "kraken-staking-rewards"')
-      response = JSON.parse(cachedResponse);
-    } else {
-
-      const stakingTransactions = await getStakingTransactions();
-      const stakingRewards = stakingTransactions
-        .filter(transaction => transaction.type === 'reward')
-        .filter(transaction => transaction.asset === 'DOT28.S');
-
-      response = stakingRewards;
-
-      // cache the response
-      await redis.set('kraken-staking-rewards', JSON.stringify(response), 'EX', defaultCacheTime);
-    }
-
+    const response = await fetchStakingTransactions('Kraken');
     reply.send(response);
   })
 
   // endpoint which returns trade history
-  server.get('/trade-history', async (request, reply) => {
+  server.get('/account/trade-history', async (request, reply) => {
 
     let response;
 
@@ -105,7 +90,7 @@ export const krakenRoutes = async (server: FastifyInstance) => {
   });
 
   // endpoint which syncs all ticker prices into redis
-  server.get('/sync-prices', async (request, reply) => {
+  server.get('/assets/sync-prices', async (request, reply) => {
 
     const response = await getAssetPrices();
 
@@ -117,7 +102,7 @@ export const krakenRoutes = async (server: FastifyInstance) => {
   });
 
   // Endpoint to synchronize trading data from Kraken to DynamoDB
-  server.get('/sync/kraken', async (request, reply) => {
+  server.get('/account/sync', async (request, reply) => {
 
     let ofs = 0; // Offset for Kraken API ledger data request
     let completeLedger: { [key: string]: any } = {}; // Stores all the ledger entries from Kraken API
