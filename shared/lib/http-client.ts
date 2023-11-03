@@ -42,7 +42,7 @@ export const post = async <T>(url: string, body: HttpBody, options?: HttpOptions
     const result: HttpResponse<T> = {
       status: response.status,
       statusText: response.statusText,
-      headers: Object.fromEntries(response.headers),
+      headers: response.headers,
       data
     };
 
@@ -67,7 +67,7 @@ export const get = async <T>(url: string, options?: HttpOptions): Promise<HttpRe
     const result: HttpResponse<T> = {
       status: response.status,
       statusText: response.statusText,
-      headers: Object.fromEntries(response.headers),
+      headers: response.headers,
       data
     };
 

@@ -1,7 +1,24 @@
-version: '3'
+version: '3.8'
+
 services:
   redis:
     container_name: redis
-    image: redis
+    image: redis:alpine
     ports:
       - "6379:6379"
+
+  crypto-dashboard-server:
+    image: domengabrovsek/crypto-dashboard-server:latest
+    container_name: crypto-dashboard-server
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - KRAKEN_API_KEY=""
+      - KRAKEN_PRIVATE_KEY=""
+    depends_on:
+      - redis
+    restart: unless-stopped
