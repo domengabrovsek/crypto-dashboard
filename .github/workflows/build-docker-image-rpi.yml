@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 name: Build and Push Docker Image for RPi
+=======
+name: Build Docker Image for RPi
+>>>>>>> 31042a5 (run rpi images build process on self-hosted runner (#329))
 
 on:
   push:
