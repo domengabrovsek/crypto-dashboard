@@ -14,7 +14,7 @@ const dynamoDbClient = new DynamoDBClient({ region: 'eu-central-1' });
   const events: LedgerEvent[] = response.Items ? response.Items.map(item => unmarshall(item) as LedgerEvent) : [];
 
   const depositEvents = events
-    .filter(event => event.eventType === 'Deposit')
+    .filter(event => event.eventType === 'Deposit');
     // .filter(event => event.payload.asset === 'ZEUR')
 
   const result = depositEvents

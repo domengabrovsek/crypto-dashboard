@@ -1,0 +1,50 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "impliedStrict": true,
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "env": {
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+    "plugin:security/recommended",
+    "plugin:deprecation/recommended",
+    "plugin:sonarjs/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "import",
+    "security",
+    "sonarjs",
+    "deprecation"
+  ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "warn",
+    "max-len": ["error", { "code": 150 }],
+    "quotes": [2, "single", { "avoidEscape": true }],
+    "semi": ["error", "always"],
+    "sonarjs/no-duplicate-string": "warn",
+    "sonarjs/no-small-switch": "warn",
+    "sonarjs/no-nested-template-literals": "warn",
+    "no-constant-condition":"warn"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      }
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts"]
+    },
+    "import/extensions": [".js", ".ts"]
+  }
+}
